@@ -3,7 +3,7 @@ title: Fabry–Perot Mode Filter
 subtitle: Watch the light exiting an optical resonator rapidly cycle through a variety of intricate mode patterns.
 added: 2026-09-23 # TODO: real date
 
-diagram: ./setup.png
+diagram: ./diagram.svg
 diagramAlt: >-
   Setup: a HeNe laser beam passes through two resonator mirrors separated by L, then a microscope
   objective, onto a viewing screen. Below, a plot of cavity transmission versus wavelength shows

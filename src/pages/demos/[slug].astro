@@ -5,6 +5,14 @@ import Base from '../../layouts/Base.astro';
 import Meter from '../../components/Meter.astro';
 import { ATTRIBUTES, formatBudget, formatScore } from '../../data/attributes';
 import { withBase } from '../../lib/url';
+import { prepareInlineSvg } from '../../lib/svg';
+
+// Raw text of every SVG in the demo folders, so SVG diagrams can be inlined (see src/lib/svg.ts).
+const rawSvgs = import.meta.glob<string>('/src/content/demos/*/*.svg', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
 
 export async function getStaticPaths() {
   const demos = await getCollection('demos', (d) => !d.data.draft);
@@ -21,6 +29,17 @@ const scoreRows = ATTRIBUTES.map((a) =>
     ? { label: a.label, value: formatBudget(d.budget), range: null }
     : { label: a.label, value: formatScore(d.scores[a.key]), range: d.scores[a.key] },
 );
+
+// An SVG diagram is inlined; find its file among this demo's SVGs by name. The processed image
+// URL keeps the file name (dev: /@fs/…/setup.svg?…, build: /_astro/setup.<hash>.svg).
+let diagramSvg: string | null = null;
+if (d.diagram?.format === 'svg') {
+  const match = Object.entries(rawSvgs).find(([path]) => {
+    const [folder, file] = path.split('/').slice(-2);
+    return folder === demo.id && d.diagram!.src.includes('/' + file.replace(/\.svg$/, '') + '.');
+  });
+  if (match) diagramSvg = prepareInlineSvg(match[1], d.diagramAlt ?? '');
+}
 
 // Two photo slots beside the diagram; empty slots show a placeholder until photos are added.
 const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
@@ -39,7 +58,11 @@ const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
       {
         d.diagram && (
           <div class="demo-diagram" id="diagram">
-            <Image src={d.diagram} alt={d.diagramAlt ?? ''} widths={[648, 1296]} sizes="648px" loading="eager" />
+            {diagramSvg ? (
+              <Fragment set:html={diagramSvg} />
+            ) : (
+              <Image src={d.diagram} alt={d.diagramAlt ?? ''} widths={[648, 1296]} sizes="648px" loading="eager" />
+            )}
           </div>
         )
       }

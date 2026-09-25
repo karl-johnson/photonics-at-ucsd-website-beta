@@ -3,12 +3,12 @@ title: Fiber Modes
 subtitle: See the output intensity patterns of single- and multi-mode fiber, and manipulate them using fiber paddles.
 added: 2026-09-24 # TODO: real date
 
-diagram: ./setup.png
+diagram: ./diagram.svg
 diagramAlt: >-
   Setup: a fiber fault locator (red laser) feeds fiber through a set of polarization paddles on a
-  breadboard, then into a single-mode, few-mode, or multi-mode fiber aimed at a viewing screen.
-  Below, the patterns on the screen: a smooth round spot for single-mode fiber, a two-lobed pattern
-  for few-mode fiber, and a grainy speckle pattern for multi-mode fiber.
+  breadboard, then into a single-mode, few-mode, or multi-mode fiber aimed at a viewing screen
+  through a polarizer. Below, the patterns on the screen: a smooth round spot for single-mode fiber,
+  a two-lobed pattern for few-mode fiber, and a grainy speckle pattern for multi-mode fiber.
 
 budget: [50, 100]
 scores:
@@ -17,7 +17,7 @@ scores:
   portability: [6, 7]
   setupTime: [2, 3]
   demoComplexity: [5, 7]
-  conceptComplexity: [6, 9]
+  conceptComplexity: [6, 8]
   wow: 4
 
 supplies:

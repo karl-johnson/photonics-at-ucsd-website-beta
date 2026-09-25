@@ -3,6 +3,11 @@ title: Crookes Radiometer
 subtitle: Power mechanical motion using only light.
 added: 2026-09-24 # TODO: real date
 
+diagram: ./diagram.svg
+diagramAlt: >-
+  Two Crookes radiometers side by side: on the left, in the dark, the rotor is still; on the right,
+  in sunlight, the rotor spins.
+
 budget: [25, 50]
 scores:
   tools: 0

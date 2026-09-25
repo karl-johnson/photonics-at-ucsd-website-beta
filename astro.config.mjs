@@ -14,6 +14,11 @@ export default defineConfig({
   base,
   output: 'static',
   trailingSlash: 'always',
+  image: {
+    // Lets SVG diagrams be turned into small WebP thumbnails for the front page. Safe here because
+    // every SVG comes from this repository (no user uploads or remote images).
+    dangerouslyProcessSVG: true,
+  },
   markdown: {
     processor: unified({
       remarkPlugins: [remarkDirective, remarkDemo],

@@ -22,8 +22,9 @@ const items = await Promise.all(
       title: d.title,
       subtitle: d.subtitle,
       added: d.added.toISOString().slice(0, 10),
-      img: src ? (await getImage({ src, width: 952 })).src : null,
-      thumb: src ? (await getImage({ src, width: 216 })).src : null,
+      // format: 'webp' also rasterizes SVG diagrams, which would otherwise be copied at full size.
+      img: src ? (await getImage({ src, width: 952, format: 'webp' })).src : null,
+      thumb: src ? (await getImage({ src, width: 216, format: 'webp' })).src : null,
       isDiagram: !photo && !!d.diagram,
       ranges: { budget: d.budget, ...d.scores } as Record<string, Range>,
     };
@@ -35,8 +36,8 @@ const cellValue = (item: Item, key: string, compact = false) =>
   key === 'budget' ? formatBudget(item.ranges.budget, compact) : formatScore(item.ranges[key]);
 
 const featured = items[0];
-const defaultX = 'conceptComplexity';
-const defaultY = 'wow';
+const defaultX = 'budget';
+const defaultY = 'conceptComplexity';
 const labelOf = (key: string) => ATTRIBUTES.find((a) => a.key === key)!.label;
 const chevronDown = 'M2 4l4 4 4-4';
 const chevronUp = 'M2 8l4-4 4 4';

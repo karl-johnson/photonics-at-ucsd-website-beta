@@ -62,6 +62,7 @@ If you change the Markdown plugins in `src/plugins/`, stop the dev server and de
 | `src/content.config.ts` | Demo schema: the allowed fields at the top of each `index.md` |
 | `src/data/attributes.ts` | The 8 attributes (names, order, formatting) |
 | `src/plugins/remark-demo.mjs`, `rehype-demo.mjs` | Turn the Markdown conventions above into the page layout |
+| `src/lib/svg.ts` | Prepares SVG diagrams for placing directly in the page (cleans Inkscape metadata, fixes wrapped-text positions for Chrome) |
 | `src/pages/index.astro`, `src/scripts/selector.ts` | Demo Selector (plot, preview, sortable list) |
 | `src/pages/demos/[slug].astro` | Demo page template |
 | `src/styles/global.css` | Design tokens and all styles |

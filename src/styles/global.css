@@ -288,7 +288,9 @@ main.page {
   padding-top: 16px;
   scroll-margin-top: 24px;
 }
-.demo-diagram img {
+.demo-diagram img,
+.demo-diagram svg {
+  display: block;
   width: 100%;
   height: auto;
 }

@@ -643,7 +643,8 @@ a.cite {
   color: #fff;
 }
 .tag--effectively-required,
-.tag--likely-required {
+.tag--likely-required,
+.tag--maybe-required {
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -655,6 +656,10 @@ a.cite {
   background: var(--placeholder);
   border-color: var(--placeholder);
   color: var(--ink);
+}
+.tag--optional {
+  border-color: var(--rule);
+  color: var(--muted);
 }
 
 /* ───────── Front page ───────── */

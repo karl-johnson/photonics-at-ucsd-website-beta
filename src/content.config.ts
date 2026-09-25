@@ -2,12 +2,10 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-// A score is a single number (5) or a range ([7, 9]) on the 1–10 scale.
+// A score is a single number (5) or a range ([7, 9]) on the 0–10 scale.
+const scoreValue = z.number().int().min(0).max(10);
 const score = z
-  .union([
-    z.number().int().min(1).max(10),
-    z.tuple([z.number().int().min(1).max(10), z.number().int().min(1).max(10)]),
-  ])
+  .union([scoreValue, z.tuple([scoreValue, scoreValue])])
   .transform((v) => (Array.isArray(v) ? { lo: v[0], hi: v[1] } : { lo: v, hi: v }))
   .refine((r) => r.lo <= r.hi, { message: 'Score range must be written [low, high]' });
 
@@ -21,8 +19,10 @@ export const NEED_LEVELS = [
   'required',
   'effectively-required',
   'likely-required',
+  'maybe-required',
   'highly-recommended',
   'recommended',
+  'optional',
 ] as const;
 
 const demos = defineCollection({

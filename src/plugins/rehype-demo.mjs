@@ -16,8 +16,10 @@ const NEED_LABELS = {
   required: 'Required',
   'effectively-required': 'Effectively required',
   'likely-required': 'Likely required',
+  'maybe-required': 'May be required',
   'highly-recommended': 'Highly recommended',
   recommended: 'Recommended',
+  optional: 'Optional',
 };
 
 const isElement = (node, tag) => node?.type === 'element' && (!tag || node.tagName === tag);

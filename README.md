@@ -23,7 +23,7 @@ The home page's plot and list update automatically.
 
 ### The top of the file (between the `---` lines)
 
-This part holds the structured info: title, subtitle, date added, budget, the seven 1–10 scores, images, and the supplies list. Scores can be a single number (`5`) or a range (`[7, 9]`).
+This part holds the structured info: title, subtitle, date added, budget, the seven 0–10 scores, images, and the supplies list. Scores can be a single number (`5`) or a range (`[7, 9]`).
 
 If something is wrong, such as a score of 12, a misspelled `need`, or a missing image, the build stops. The error names the file and the field, for example `scores.wow: Too big: expected number to be <=10`.
 

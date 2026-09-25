@@ -14,7 +14,7 @@ interface Item {
 }
 
 const PLOT = 538; // inner size of the 540px plot (1px border)
-const U = 54; // one score unit
+const U = PLOT / 11; // one score unit: 11 positions for scores 0–10
 const MARK = 14; // mark thickness
 
 interface Axis {
@@ -23,17 +23,17 @@ interface Axis {
 }
 
 const scoreAxis: Axis = {
-  ticks: Array.from({ length: 10 }, (_, i) => ({ v: i + 1, label: String(i + 1) })),
-  pos: (v) => (v - 0.5) * U,
+  ticks: Array.from({ length: 11 }, (_, i) => ({ v: i, label: String(i) })),
+  pos: (v) => (v + 0.5) * U,
 };
 
-// Budget is dollars, not 1–10: log scale from $10 to $10k.
+// Budget is dollars, not 0–10: log scale from $10 to $10k, using the same span as scores 0–10.
 const budgetAxis: Axis = {
   ticks: [10, 30, 100, 300, 1000, 3000, 10000].map((v) => ({
     v,
     label: v >= 1000 ? `$${v / 1000}k` : `$${v}`,
   })),
-  pos: (v) => U / 2 + ((Math.log10(Math.min(Math.max(v, 10), 10000)) - 1) / 3) * (U * 9),
+  pos: (v) => U / 2 + ((Math.log10(Math.min(Math.max(v, 10), 10000)) - 1) / 3) * (U * 10),
 };
 
 const axisFor = (key: string) => (key === 'budget' ? budgetAxis : scoreAxis);

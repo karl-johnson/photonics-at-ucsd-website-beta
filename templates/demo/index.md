@@ -18,7 +18,7 @@ added: 2026-01-31 # YYYY-MM-DD, used for "most recent" sorting
 # Budget in dollars: one number (40) or a range ([250, 1000]).
 budget: [50, 100]
 
-# Scores are 1–10: one number (5) or a range ([7, 9]).
+# Scores are 0–10: one number (5) or a range ([7, 9]).
 scores:
   tools: 3              # Required tools
   assembly: [4, 5]      # Assembly complexity
@@ -29,7 +29,8 @@ scores:
   wow: 8                # WOW factor
 
 # Shown as a table under the "## Supplies" heading.
-# need: required | effectively-required | likely-required | highly-recommended | recommended
+# need: required | effectively-required | likely-required | maybe-required |
+#       highly-recommended | recommended | optional
 # details can use Markdown links and *emphasis*. cost can be one line or a list of lines.
 supplies:
   - item: Example part

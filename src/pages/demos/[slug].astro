@@ -1,0 +1,116 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Meter from '../../components/Meter.astro';
+import { ATTRIBUTES, formatBudget, formatScore } from '../../data/attributes';
+import { withBase } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const demos = await getCollection('demos', (d) => !d.data.draft);
+  return demos.map((demo) => ({ params: { slug: demo.id }, props: { demo } }));
+}
+
+const { demo } = Astro.props;
+const d = demo.data;
+const { Content, headings } = await render(demo);
+const sections = headings.filter((h) => h.depth === 2);
+
+const scoreRows = ATTRIBUTES.map((a) =>
+  a.key === 'budget'
+    ? { label: a.label, value: formatBudget(d.budget), range: null }
+    : { label: a.label, value: formatScore(d.scores[a.key]), range: d.scores[a.key] },
+);
+
+// Two photo slots beside the diagram; empty slots show a placeholder until photos are added.
+const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
+---
+
+<Base title={d.title} description={d.subtitle} footerLink={{ label: '← All demos', href: '/' }}>
+  <section class="container demo-hero">
+    <div class="demo-hero-main">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href={withBase('/')}>Demos</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{d.title}</span>
+      </nav>
+      <h1 class="demo-title">{d.title}</h1>
+      <p class="demo-subtitle">{d.subtitle}</p>
+      {
+        d.diagram && (
+          <div class="demo-diagram" id="diagram">
+            <Image src={d.diagram} alt={d.diagramAlt ?? ''} widths={[648, 1296]} sizes="648px" loading="eager" />
+          </div>
+        )
+      }
+    </div>
+
+    <div class="demo-side">
+      <dl class="scores" aria-label="Attribute scores">
+        {
+          scoreRows.map((r) => (
+            <div class="scores-row">
+              <dt>{r.label}</dt>
+              <dd>{r.range && <Meter range={r.range} />}</dd>
+              <dd class="scores-value">{r.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      {
+        photoSlots.map((p, i) =>
+          p ? (
+            <figure class="photo">
+              <Image src={p.src} alt={p.alt} widths={[448, 896]} sizes="448px" />
+            </figure>
+          ) : (
+            <div class:list={['photo', 'placeholder', { 'placeholder--dark': i === 1 }]} aria-hidden="true">
+              [PHOTO]
+            </div>
+          ),
+        )
+      }
+    </div>
+  </section>
+
+  <div class="container demo-body">
+    <nav class="toc" aria-label="On this page">
+      <span class="toc-label">Contents</span>
+      {
+        sections.map((s, i) => (
+          <a href={`#${s.slug}`} data-toc={s.slug}>
+            <span>{String(i + 1).padStart(2, '0')}</span>
+            {s.text}
+          </a>
+        ))
+      }
+    </nav>
+    <article class="doc">
+      <Content />
+    </article>
+  </div>
+</Base>
+
+<script>
+  // Highlight the TOC entry for the section currently being read.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a[data-toc]')];
+  const targets = links
+    .map((a) => document.getElementById(a.dataset.toc!)?.closest('section'))
+    .filter((s): s is HTMLElement => !!s);
+
+  function update() {
+    const line = window.innerHeight * 0.3;
+    let current = 0;
+    targets.forEach((s, i) => {
+      if (s.getBoundingClientRect().top <= line) current = i;
+    });
+    // At the very bottom, the last (possibly short) section counts as current.
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+      current = targets.length - 1;
+    }
+    links.forEach((a, i) => a.classList.toggle('is-active', i === current));
+  }
+  update();
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+</script>

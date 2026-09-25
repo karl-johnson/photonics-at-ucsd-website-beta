@@ -1,0 +1,168 @@
+---
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Meter from '../components/Meter.astro';
+import { ATTRIBUTES, formatBudget, formatScore, type Range } from '../data/attributes';
+import { withBase } from '../lib/url';
+
+const demos = (await getCollection('demos', (d) => !d.data.draft)).sort(
+  (a, b) => b.data.added.getTime() - a.data.added.getTime(),
+);
+
+// Everything the page (and its client script) needs about each demo.
+const items = await Promise.all(
+  demos.map(async (demo) => {
+    const d = demo.data;
+    const photo = d.thumbnail ?? d.photos[0]?.src;
+    const src = photo ?? d.diagram;
+    return {
+      id: demo.id,
+      href: withBase(`/demos/${demo.id}/`),
+      title: d.title,
+      subtitle: d.subtitle,
+      added: d.added.toISOString().slice(0, 10),
+      img: src ? (await getImage({ src, width: 952 })).src : null,
+      thumb: src ? (await getImage({ src, width: 216 })).src : null,
+      isDiagram: !photo && !!d.diagram,
+      ranges: { budget: d.budget, ...d.scores } as Record<string, Range>,
+    };
+  }),
+);
+type Item = (typeof items)[number];
+
+const cellValue = (item: Item, key: string, compact = false) =>
+  key === 'budget' ? formatBudget(item.ranges.budget, compact) : formatScore(item.ranges[key]);
+
+const featured = items[0];
+const defaultX = 'conceptComplexity';
+const defaultY = 'wow';
+const labelOf = (key: string) => ATTRIBUTES.find((a) => a.key === key)!.label;
+const chevronDown = 'M2 4l4 4 4-4';
+const chevronUp = 'M2 8l4-4 4 4';
+---
+
+<Base>
+  <div class="container">
+    <h1 class="home-title">Demo Selector</h1>
+
+    <section class="explorer" aria-label="Demo explorer">
+      <div class="plot-frame">
+        <div class="y-strip">
+          <div class="y-dd-anchor">
+            <div class="dd dd--y" data-axis="y">
+              <button type="button" class="dd-button" aria-haspopup="listbox" aria-expanded="false">
+                <span class="dd-axis">Y</span>
+                <span class="dd-label">{labelOf(defaultY)}</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d={chevronDown}></path></svg>
+              </button>
+              <ul class="dd-menu" role="listbox" aria-label="Y axis" hidden></ul>
+            </div>
+          </div>
+        </div>
+        <div class="y-ticks" aria-hidden="true"></div>
+        <div class="plot" role="group" aria-label="Demos plotted by the selected attributes"></div>
+
+        <div class="x-ticks" aria-hidden="true"></div>
+
+        <div class="x-strip">
+          <div class="dd dd--x" data-axis="x">
+            <button type="button" class="dd-button" aria-haspopup="listbox" aria-expanded="false">
+              <span class="dd-axis">X</span>
+              <span class="dd-label">{labelOf(defaultX)}</span>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d={chevronUp}></path></svg>
+            </button>
+            <ul class="dd-menu" role="listbox" aria-label="X axis" hidden></ul>
+          </div>
+        </div>
+      </div>
+
+      {
+        featured && (
+          <a class="preview lift" href={featured.href} aria-label={`Open ${featured.title}`}>
+            <div class:list={['preview-media', { 'is-diagram': featured.isDiagram }]}>
+              {featured.img && <img src={featured.img} alt="" />}
+            </div>
+            <div class="preview-text">
+              <h2 class="preview-title">{featured.title}</h2>
+              <p class="preview-sub">{featured.subtitle}</p>
+            </div>
+            <div class="preview-attrs">
+              {ATTRIBUTES.map((a) => (
+                <div class="preview-attr">
+                  <span class="preview-attr-label">{a.label}</span>
+                  <div class="preview-attr-val">
+                    {a.key === 'budget' ? <span /> : <Meter range={featured.ranges[a.key]} size="md" />}
+                    <span class="mono">{cellValue(featured, a.key)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </a>
+        )
+      }
+    </section>
+
+    <section class="all-demos" id="all" aria-labelledby="all-demos-title">
+      <div class="all-demos-head">
+        <div>
+          <h2 id="all-demos-title">All demos</h2>
+          <span class="mono">{items.length} {items.length === 1 ? 'demo' : 'demos'}</span>
+        </div>
+        <span class="mono muted hint">Click a column to sort</span>
+      </div>
+
+      <div>
+        <div class="demo-grid list-head">
+          <span></span>
+          <span class="list-head-label">Demo</span>
+          {
+            ATTRIBUTES.map((a) => (
+              <button type="button" class="sort-btn" data-sort={a.key} aria-pressed="false" title={`Sort by ${a.full}`}>
+                <span>{a.short}</span>
+                <span class="arrow" aria-hidden="true">↕</span>
+              </button>
+            ))
+          }
+          <button type="button" class="sort-btn" data-sort="added" aria-pressed="true" title="Sort by most recent">
+            <span>Date added</span>
+            <span class="arrow" aria-hidden="true">↓</span>
+          </button>
+        </div>
+
+        <ol class="demo-list">
+          {
+            items.map((item) => (
+              <li data-id={item.id}>
+                <a class="demo-grid demo-row" href={item.href}>
+                  <span class:list={['demo-thumb', { 'is-diagram': item.isDiagram }]}>
+                    {item.thumb && <img src={item.thumb} alt="" loading="lazy" />}
+                  </span>
+                  <span class="demo-row-text">
+                    <span class="demo-row-title">{item.title}</span>
+                    <span class="demo-row-sub">{item.subtitle}</span>
+                  </span>
+                  {ATTRIBUTES.map((a) => (
+                    <span class="demo-cell">
+                      <span class="visually-hidden">{a.label}:</span>
+                      <span class="mono">{cellValue(item, a.key, true)}</span>
+                      {a.key !== 'budget' && <Meter range={item.ranges[a.key]} size="sm" />}
+                    </span>
+                  ))}
+                  <span class="demo-date">{item.added}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+  </div>
+
+  <script type="application/json" id="demo-data" set:html={JSON.stringify({ items, defaultX, defaultY }).replace(/</g, '\\u003c')} />
+</Base>
+
+<script>
+  import { initSelector } from '../scripts/selector';
+  initSelector();
+</script>

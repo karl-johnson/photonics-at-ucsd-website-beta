@@ -1,0 +1,78 @@
+---
+import '../styles/global.css';
+import logo from '../assets/logo-mark.svg';
+import { withBase } from '../lib/url';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Which main nav item is active */
+  nav?: 'demos' | 'resources' | 'about';
+  footerLink?: { label: string; href: string };
+}
+
+const {
+  title,
+  description = 'Optical demos built by the Photonics Society at UC San Diego, documented so you can build and present them yourself.',
+  nav = 'demos',
+  footerLink = { label: 'About the society', href: '/about/' },
+} = Astro.props;
+
+const siteName = 'Photonics Society at UC San Diego';
+const fullTitle = title ? `${title} — ${siteName}` : siteName;
+const navItems = [
+  { key: 'demos', label: 'Demos', href: '/' },
+  { key: 'resources', label: 'Resources', href: '/resources/' },
+  { key: 'about', label: 'About', href: '/about/' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href={withBase('/')}>
+          <span class="brand-mark">
+            <img src={logo.src} alt="" width={logo.width} height={logo.height} />
+            <span class="brand-name">Photonics Society <span>at UC San Diego</span></span>
+          </span>
+          <span class="brand-divider" aria-hidden="true"></span>
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          {
+            navItems.map((item) => (
+              <a href={withBase(item.href)} aria-current={item.key === nav ? 'page' : undefined}>
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <strong>{siteName}</strong>
+        <a href={withBase(footerLink.href)}>{footerLink.label}</a>
+      </div>
+    </footer>
+  </body>
+</html>

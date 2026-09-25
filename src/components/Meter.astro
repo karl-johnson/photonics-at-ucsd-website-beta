@@ -1,0 +1,14 @@
+---
+import { segments, type Range } from '../data/attributes';
+
+interface Props {
+  range: Range;
+  size?: 'lg' | 'md' | 'sm';
+}
+
+const { range, size = 'lg' } = Astro.props;
+---
+
+<span class:list={['meter', `meter--${size}`]} aria-hidden="true">
+  {segments(range).map((s) => <span class={s} />)}
+</span>

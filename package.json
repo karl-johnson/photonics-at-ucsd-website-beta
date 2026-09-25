@@ -1,0 +1,23 @@
+{
+  "name": "photonics-at-ucsd-website-beta",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.1",
+    "astro": "^7.3.5",
+    "github-slugger": "^2.0.0",
+    "hast-util-to-string": "^3.0.1",
+    "hastscript": "^9.0.1",
+    "mdast-util-from-markdown": "^2.0.3",
+    "mdast-util-to-hast": "^13.2.1",
+    "remark-directive": "^4.0.0",
+    "unist-util-visit": "^5.1.0"
+  }
+}

@@ -1,0 +1,14 @@
+---
+import Base from '../../layouts/Base.astro';
+import { withBase } from '../../lib/url';
+---
+
+<Base title="Resources" nav="resources" footerLink={{ label: '← All demos', href: '/' }}>
+  <div class="container simple-page">
+    <h1>Resources</h1>
+    <p>
+      Recommendations for light sources and optomechanics that work across many of our demos are coming soon. In the
+      meantime, each <a href={withBase('/')}>demo page</a> lists the specific supplies it needs.
+    </p>
+  </div>
+</Base>

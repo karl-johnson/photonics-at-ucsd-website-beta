@@ -1,5 +1,13 @@
 // Front page interactivity: scatter plot, axis dropdowns, hover preview, sortable list.
-import { ATTRIBUTES, formatBudget, formatScore, segments, type Range } from '../data/attributes';
+// The parameters (from src/data/rubric.yaml) arrive with the demo data, so nothing here is hard-coded.
+import { formatValue, segments, type Range, type Unit } from '../lib/scores';
+
+interface ParameterInfo {
+  key: string;
+  name: string;
+  short: string;
+  unit: Unit;
+}
 
 interface Item {
   id: string;
@@ -27,19 +35,14 @@ const scoreAxis: Axis = {
   pos: (v) => (v + 0.5) * U,
 };
 
-// Budget is dollars, not 0–10: log scale from $10 to $10k, using the same span as scores 0–10.
-const budgetAxis: Axis = {
+// Dollar parameters (budget) aren't 0–10: log scale from $10 to $10k, using the same span as scores 0–10.
+const dollarAxis: Axis = {
   ticks: [10, 30, 100, 300, 1000, 3000, 10000].map((v) => ({
     v,
     label: v >= 1000 ? `$${v / 1000}k` : `$${v}`,
   })),
   pos: (v) => U / 2 + ((Math.log10(Math.min(Math.max(v, 10), 10000)) - 1) / 3) * (U * 10),
 };
-
-const axisFor = (key: string) => (key === 'budget' ? budgetAxis : scoreAxis);
-const labelOf = (key: string) => ATTRIBUTES.find((a) => a.key === key)?.label ?? key;
-const valueOf = (item: Item, key: string, compact = false) =>
-  key === 'budget' ? formatBudget(item.ranges.budget, compact) : formatScore(item.ranges[key]);
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -52,11 +55,18 @@ const meterHtml = (r: Range, size: 'md' | 'sm') =>
 export function initSelector() {
   const dataEl = document.getElementById('demo-data');
   if (!dataEl) return;
-  const { items, defaultX, defaultY } = JSON.parse(dataEl.textContent!) as {
+  const { items, parameters, defaultX, defaultY } = JSON.parse(dataEl.textContent!) as {
     items: Item[];
+    parameters: ParameterInfo[];
     defaultX: string;
     defaultY: string;
   };
+
+  const paramOf = (key: string) => parameters.find((p) => p.key === key)!;
+  const axisFor = (key: string) => (paramOf(key).unit === 'usd' ? dollarAxis : scoreAxis);
+  const labelOf = (key: string) => paramOf(key)?.name ?? key;
+  const valueOf = (item: Item, key: string, compact = false) =>
+    formatValue(paramOf(key).unit, item.ranges[key], compact);
 
   const plot = document.querySelector<HTMLElement>('.plot')!;
   const xTicks = document.querySelector<HTMLElement>('.x-ticks')!;
@@ -156,12 +166,12 @@ export function initSelector() {
     media.innerHTML = item.img ? `<img src="${esc(item.img)}" alt="">` : '';
     preview.querySelector('.preview-title')!.textContent = item.title;
     preview.querySelector('.preview-sub')!.textContent = item.subtitle;
-    preview.querySelector('.preview-attrs')!.innerHTML = ATTRIBUTES.map(
-      (a) => `<div class="preview-attr">
-        <span class="preview-attr-label">${esc(a.label)}</span>
+    preview.querySelector('.preview-attrs')!.innerHTML = parameters.map(
+      (p) => `<div class="preview-attr">
+        <span class="preview-attr-label">${esc(p.name)}</span>
         <div class="preview-attr-val">
-          ${a.key === 'budget' ? '<span></span>' : meterHtml(item.ranges[a.key], 'md')}
-          <span class="mono">${esc(valueOf(item, a.key))}</span>
+          ${p.unit === 'usd' ? '<span></span>' : meterHtml(item.ranges[p.key], 'md')}
+          <span class="mono">${esc(valueOf(item, p.key))}</span>
         </div>
       </div>`,
     ).join('');
@@ -175,9 +185,9 @@ export function initSelector() {
     const menu = root.querySelector<HTMLElement>('.dd-menu')!;
     const label = root.querySelector<HTMLElement>('.dd-label')!;
 
-    menu.innerHTML = ATTRIBUTES.map(
-      (a) =>
-        `<li role="none"><button type="button" role="option" class="dd-option" data-key="${a.key}" aria-selected="false">${esc(a.label)}</button></li>`,
+    menu.innerHTML = parameters.map(
+      (p) =>
+        `<li role="none"><button type="button" role="option" class="dd-option" data-key="${esc(p.key)}" aria-selected="false">${esc(p.name)}</button></li>`,
     ).join('');
     const options = [...menu.querySelectorAll<HTMLButtonElement>('.dd-option')];
 
@@ -271,7 +281,8 @@ export function initSelector() {
       if (key === sort.key) sort.dir *= -1;
       else {
         sort.key = key;
-        sort.dir = key === 'budget' ? 1 : -1; // cheapest first; everything else highest/newest first
+        // Dollar amounts cheapest first; scores and dates highest/newest first.
+        sort.dir = key !== 'added' && paramOf(key).unit === 'usd' ? 1 : -1;
       }
       applySort();
     }),

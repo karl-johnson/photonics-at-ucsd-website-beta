@@ -1,0 +1,143 @@
+---
+// The scoring rubric, generated entirely from src/data/rubric.yaml.
+import Base from '../../layouts/Base.astro';
+import Meter from '../../components/Meter.astro';
+import { PARAMETERS } from '../../data/parameters';
+import { withBase } from '../../lib/url';
+
+const pad = (i: number) => String(i + 1).padStart(2, '0');
+const NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+const count = NUMBER_WORDS[PARAMETERS.length] ?? String(PARAMETERS.length);
+
+const panels = PARAMETERS.map((p, i) => ({
+  ...p,
+  num: pad(i),
+  prev: PARAMETERS[(i + PARAMETERS.length - 1) % PARAMETERS.length],
+  next: PARAMETERS[(i + 1) % PARAMETERS.length],
+  // Dollar parameters list only their described amounts; score parameters show every level 0–10.
+  rows:
+    p.unit === 'usd'
+      ? Object.entries(p.levels).map(([k, text]) => ({ label: `$${k}`, text, range: null }))
+      : Array.from({ length: 11 }, (_, k) => ({ label: String(k), text: p.levels[k] ?? '', range: { lo: k, hi: k } })),
+}));
+---
+
+<Base
+  title="Scoring rubric"
+  description="What each score from 0 to 10 means for every parameter our demos are scored on."
+  nav="resources"
+  footerLink={{ label: '← All resources', href: '/resources/' }}
+>
+  <section class="container rubric-hero">
+    <div class="demo-hero-main">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href={withBase('/resources/')}>Resources</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">Scoring rubric</span>
+      </nav>
+      <h1 class="demo-title">Scoring rubric</h1>
+      <p class="demo-subtitle">
+        Every demo is scored on {count} parameters. Pick one to see what each score from 0 to 10 means.
+      </p>
+    </div>
+
+    <aside class="read-score" aria-label="How to read a score">
+      <div class="read-score-head">How to read a score</div>
+      <div class="read-score-body">
+        <div class="read-score-example">
+          <span>Concept complexity</span>
+          <Meter range={{ lo: 7, hi: 9 }} />
+          <span class="mono">7–9</span>
+        </div>
+        <p>
+          A demo doesn’t occupy just one score for each parameter: it can span a range. Dark segments run up to the low
+          end of the range; grey segments extend it to the high end.
+        </p>
+      </div>
+    </aside>
+  </section>
+
+  <div class="container rubric-body">
+    <nav class="toc rubric-rail" aria-label="Parameters">
+      <span class="toc-label">Parameters</span>
+      {
+        panels.map((p) => (
+          <a href={`#${p.key}`} data-key={p.key}>
+            <span>{p.num}</span>
+            {p.name}
+          </a>
+        ))
+      }
+    </nav>
+
+    <!-- Without JavaScript every parameter is shown in turn; with it, only the selected one. -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <div class="rubric-panels">
+      {
+        panels.map((p) => (
+          <section class="rubric-panel" id={p.key} data-key={p.key} aria-labelledby={`${p.key}-title`}>
+            <div class="section-head">
+              <span class="section-num">{p.num}</span>
+              <h2 id={`${p.key}-title`}>{p.name}</h2>
+            </div>
+            {p.description && <p class="rubric-desc">{p.description}</p>}
+            {p.unit === 'usd' && (
+              <aside class="note">
+                <div class="note-title">Not a 0–10 scale</div>
+                <p>
+                  {p.name} is an amount in US dollars. Demo pages show it as a range, like <span class="mono">$250–$1000</span>,
+                  with no meter.
+                </p>
+              </aside>
+            )}
+            <ol class="ladder">
+              {p.rows.map((r) => (
+                <li class="ladder-row">
+                  <div class="ladder-score">
+                    <span class="ladder-num">{r.label}</span>
+                    {r.range && <Meter range={r.range} size="md" />}
+                  </div>
+                  <p>{r.text}</p>
+                </li>
+              ))}
+            </ol>
+            <div class="rubric-pager">
+              <a href={`#${p.prev.key}`} data-key={p.prev.key}>← {p.prev.name}</a>
+              <a href={`#${p.next.key}`} data-key={p.next.key}>{p.next.name} →</a>
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Show one parameter at a time; the selection lives in the URL hash so it can be linked to.
+  const panels = [...document.querySelectorAll<HTMLElement>('.rubric-panel')];
+  const railLinks = [...document.querySelectorAll<HTMLAnchorElement>('.rubric-rail a[data-key]')];
+  const container = document.querySelector<HTMLElement>('.rubric-panels');
+
+  function show(key: string | null) {
+    const target = panels.find((p) => p.dataset.key === key) ?? panels[0];
+    panels.forEach((p) => p.classList.toggle('is-active', p === target));
+    railLinks.forEach((a) => {
+      const on = a.dataset.key === target.dataset.key;
+      a.classList.toggle('is-active', on);
+      if (on) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    const link = (e.target as Element).closest<HTMLAnchorElement>('a[data-key]');
+    if (!link || !container) return;
+    e.preventDefault();
+    history.replaceState(null, '', `#${link.dataset.key}`);
+    show(link.dataset.key!);
+    // Bring the top of the parameter back into view if the reader had scrolled past it.
+    if (container.getBoundingClientRect().top < 0) container.scrollIntoView({ behavior: 'smooth' });
+  });
+  window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+  show(location.hash.slice(1) || null);
+</script>

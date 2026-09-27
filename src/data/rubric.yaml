@@ -1,0 +1,197 @@
+# The scoring rubric: every parameter demos are scored on, in display order.
+#
+# This file is the single source of truth. The rubric page, the scores table on each demo page,
+# the front page plot, preview panel and sortable list, and the checks on each demo's `scores:`
+# are all built from it.
+#
+#   key          Name used under `scores:` in each demo's index.md (letters/digits, camelCase).
+#                Renaming or removing a key means updating every demo, and the build tells you which.
+#   name         Full name, shown on the rubric page, demo pages and plot dropdowns.
+#   short        Column header in the front page list (narrow: use ­ soft hyphens to allow breaks).
+#   unit         score = 0–10 scale (default), usd = dollar amount (no meter).
+#   description  What the parameter measures.
+#   levels       What each score means. Leave out scores that have no description.
+
+parameters:
+  - key: budget
+    name: Budget
+    short: Budget
+    unit: usd
+    description: The approximate cost of everything the demo needs, in US dollars.
+    levels:
+      0: "Free: can be done in its entirety by someone without a bank account. Baseline assumption is an internet connection."
+
+  - key: tools
+    name: Required tools
+    short: Tools
+    description: How fancy the tools are that you need to fabricate the required parts and assemble them together.
+    levels:
+      0: No tools required
+      1: Scissors, tape
+      2: Hand screwdriver
+      3: FDM 3D printer, hand drill
+      4: Drill press, metal tapping, soldering iron
+      5: Wood/acrylic laser cutter
+      6: Manual machining
+      7: Resin 3D printer, CNC machining/routing of wood/plastic
+      8: Metal laser cutter, CNC machining of metal
+      10: "EDM, diamond turning, cleanroom processing (lithography/deposition/etch). Essentially, inaccessible unless you’ve got connections"
+
+  - key: manufacturingDifficulty
+    name: Manufacturing difficulty
+    short: "Manu­facturing"
+    description: >-
+      Assuming you have all the required tools, how hard it is to make and assemble the required
+      parts. Conveys the complexity of the parts and how many operations are required per part.
+    levels:
+      0: Purchased off-the-shelf in an already fully assembled state.
+      2: "Like a lego set: don't have to make anything but do have to put pieces together."
+      3: First level where you have to make anything. 3D printed or laser cut parts where you can in principle just run the machine, and use as-is or assemble like legos.
+      4: "Basic assembly of things on an optical breadboard (screwing stuff together). See also: assembling IKEA furniture."
+      5: 3D printed parts require post-processing, such as heat-set inserts, press-fit magnets, or gluing them together.
+      6: "Making parts requires some level of skill/adeptness, i.e. you can't just rely on an automated tool to do everything. Tapping holes or even having to carefully cut something with scissors could go here." 
+      8: Making parts requires multi-operation machining with cross-operation tolerances that matter
+      10: Literally LIGO
+
+  - key: alignmentDifficulty
+    name: Alignment difficulty
+    short: Alignment
+    description: >-
+      How hard it is to align the optics in the setup. The “N DOF” examples here are coupled degrees
+      of freedom, as these increase difficulty exponentially (uncoupled DOFs only increase difficulty
+      linearly).
+    levels:
+      0: No optical alignment required
+      1: "1 DOF alignment: focusing a lens"
+      2: "1 DOF alignment: center a laser beam on a target using a tip/tilt mirror (the X and Y axes are decoupled)"
+      4: "2 DOF alignment: center a laser on two pinholes in series using two tip/tilt mirrors"
+      5: "Michelson interferometer with a nice coherent source: just a fairly sensitive 2 DOF alignment"
+      6: >-
+        HeNe laser cavity: a super duper sensitive 2 coupled DOF alignment where you have no feedback
+        until it starts lasing. Another example: single mode collimator-to-collimator alignment, or
+        other mode matching alignments
+      7: >-
+        Michelson interferometer (white light): kinda like (2 coupled) + (2 coupled) + 1 super
+        sensitive (path length delay) alignment. If you don’t know the right tricks, you could spend
+        a day on this and not find the alignment
+      8: >-
+        White light Mach–Zehnder interferometer with wedge beamsplitters, free space ring resonators,
+        etc. More than 3 coupled DOFs on some elements
+      9: >-
+        Mode locked laser free space alignment. When you own one of these systems, this is typically
+        only done by representatives of the laser company, whom you pay to come out and do it
+      10: Literally LIGO
+
+  - key: portability
+    name: Portability
+    short: "Porta­bility"
+    description: >-
+      How portable the setup is. Unlike the other scales, a higher number here usually goes with a
+      simpler setup, as the least portable things get a 0.
+    levels:
+      0: >-
+        Permanent installation with substantial complications in relocating. Example: an optical
+        setup with dozens of components built directly on a full-size optical table that requires
+        water/air from the building
+      1: The demo can only barely be transported, likely requiring a special vehicle and causing lots of headache
+      2: >-
+        Size of the demo is a factor when choosing a vehicle for transportation (examples: the old
+        laser puzzle on a 2×3 foot honeycomb breadboard, an absolute gravimeter)
+      3: "Example: Thorlabs Fourier optics demo"
+      6: >-
+        A bit chunky to put in a backpack, but not too fragile. May require slight disassembly for
+        travel and light padding of some components. Example: motorized polarization demo
+      7: "Could easily be carried in a backpack/bag without issue, with disassembly (example: [EXAMPLE])"
+      9: "Could be carried in a backpack/bag without issue, without disassembly (example: [EXAMPLE])"
+      10: "Could be carried around every day in your pocket (examples: hologram business card, pocket polarizers)"
+
+  - key: setupTime
+    name: Setup time
+    short: Setup time
+    description: >-
+      Related to but distinct from portability (often correlated). A non-optics example: a fold-up
+      origami kayak is quite portable but takes a while to set up, while a rigid kayak isn’t very
+      portable but is pretty much ready to go once you’ve lugged it to your destination. Times are
+      conservative, counted once everything is already at the location.
+    levels:
+      0: >-
+        The objects making up the demo can only exist in one configuration, so they’re ready to go
+        merely by possessing them (examples: hologram business card, pocket polarizers)
+      1: Some assembly needed, but only takes a few seconds if you know what you’re doing
+      2: 1 minute
+      3: Under 5 minutes
+      5: 15 minutes of dedicated setup
+      8: >-
+        1 hour: even if this were the only demo at an event, budget a full hour of setup time after
+        the equipment is at the location
+      10: >-
+        Preparations begin at the site of the demonstration a day or more in advance. Example
+        (non-optics): an FRC competition must begin setting up the field at the venue over a day
+        before the first practice matches
+
+  - key: presentationComplexity
+    name: Presentation complexity
+    short: "Presen­tation"
+    description: >-
+      How complicated the actual process of presenting this demo is, in terms of the audience.
+      Related to but distinct from concept complexity: a hologram is very easy to show to someone,
+      and anyone used to normal photographs may find it interesting, while a complex optical setup
+      needs a much more engaged and experienced audience to fully appreciate it.
+    levels:
+      0: >-
+        The logical progression of the demo can be followed by any human. Example: peek-a-boo
+        demonstrates that one’s hands are opaque objects that block light
+      1: Kindergarten
+      3: Middle school
+      4: Early high school
+      5: Late high school
+      6: General undergraduate
+      8: Physics or optics degree undergraduate
+      10: >-
+        Fully presenting the demonstration takes an hour or longer of uninterrupted activity, which
+        requires constant engagement by attendees with decent experience in order to follow. Likely
+        appropriate only for graduate level students and up
+
+  - key: conceptComplexity
+    name: Concept complexity
+    short: Concept complexity
+    description: >-
+      A dangerous category to rigorously define: discussions of even seemingly mundane things can
+      devolve into extreme complexity depending on the people involved, and a very good teacher can
+      present extremely complicated things as very simple. Both have their limits, though, and it’s
+      still meaningful to define a “typical” or “most fun” range for a given project.
+    levels:
+      0: The underlying optical principles are obvious to every human
+      1: Kindergarten
+      3: Middle school
+      5: Algebraic physics
+      6: AP physics (calculus)
+      7: Undergrad physics (lower division)
+      8: Undergraduate optics
+      9: Graduate optics
+      10: >-
+        The concepts in question are phenomena at the frontiers of modern physics or the field, and
+        if anyone actually understands them, it is only experts in that thing
+
+  - key: wow
+    name: WOW factor
+    short: WOW factor
+    description: >-
+      A subjective rating of how engaged people seem to be. It can only be assessed as high if the
+      demo has been very successful at several events with different types of audiences (within the
+      ranges of the previous two parameters).
+    levels:
+      0: >-
+        People outside of those who built it have zero interest. A sad end of the scale that
+        hopefully doesn’t happen for any project, but still worth representing: some projects are
+        worth doing for the benefit of the people building them alone.
+      2: People look at it and understand why someone might find it cool, but don’t really feel anything themselves
+      5: "Threshold: if at a booth, a decent few people stop and check it out. Example: spinning polarizer"
+      8: >-
+        Captivates nearly all attendees who see it and leaves a lasting impression, plus has a
+        fundamentally hands-on component that further enhances the experience. Example: laser puzzle
+      9: Such an extraordinarily impressive demo that it gets media attention
+      10: >-
+        Attendees fall to their knees and shed tears, so overcome by emotion they tear at their
+        clothes in despair: they have witnessed the peak sight of their mortal existence, and the rest
+        of their life will be but a series of pointless moments that pale in comparison

@@ -7,15 +7,18 @@ diagram: ./diagram.svg
 diagramAlt: >-
   Two Crookes radiometers side by side: on the left, in the dark, the rotor is still; on the right,
   in sunlight, the rotor spins.
-
-budget: [25, 50]
+photos:
+  - { src: ./crookes_rainbow.jpg, alt: A Crookes radiometer lit by a rainbow diffracting from a large diffraction grating.}
+# Scores: see /resources/rubric/ for what each number means.
 scores:
+  budget: [25, 50]
   tools: 0
-  assembly: 0
+  manufacturingDifficulty: 0
+  alignmentDifficulty: 0
   portability: 5
   setupTime: [0, 1]
-  demoComplexity: [3, 7]
-  conceptComplexity: [4, 7]
+  presentationComplexity: 0 # TODO (old "Demo complexity" score: [1, 6])
+  conceptComplexity: [5, 7]
   wow: [5, 7]
 
 supplies:

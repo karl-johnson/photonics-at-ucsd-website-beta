@@ -10,7 +10,7 @@ Each demo is one folder in `src/content/demos/`:
 src/content/demos/
   fabry-perot-mode-filter/
     index.md      ← all of the demo's text, scores and supplies
-    setup.png     ← images used by index.md
+    diagram.svg   ← images used by index.md
 ```
 
 To add a demo:
@@ -23,9 +23,21 @@ The home page's plot and list update automatically.
 
 ### The top of the file (between the `---` lines)
 
-This part holds the structured info: title, subtitle, date added, budget, the seven 0–10 scores, images, and the supplies list. Scores can be a single number (`5`) or a range (`[7, 9]`).
+This part holds the structured info: title, subtitle, date added, images, the supplies list, and `scores:`, with one entry per rubric parameter. Scores can be a single number (`5`) or a range (`[7, 9]`): 0–10, except budget, which is in dollars.
 
-If something is wrong, such as a score of 12, a misspelled `need`, or a missing image, the build stops. The error names the file and the field, for example `scores.wow: Too big: expected number to be <=10`.
+If something is wrong, such as a score of 12, a misspelled `need`, a missing image, or a missing or unknown parameter under `scores:`, the build stops. The error names the file and the field, for example `scores.wow: Too big: expected number to be <=10`.
+
+## Changing the scoring parameters
+
+The parameters, and the rubric text explaining them, live in one file: `src/data/rubric.yaml`. The [scoring rubric page](https://karl-johnson.github.io/photonics-at-ucsd-website-beta/resources/rubric/), the scores on every demo page, the front page plot, preview panel and list columns, and the checks on each demo's `scores:` are all built from it. Nothing else lists the parameters.
+
+- **Edit wording, descriptions or level text:** just edit the YAML.
+- **Reorder:** move the entries. Every page follows the new order.
+- **Add a parameter:** add an entry, then add its key to `scores:` in every demo. The build lists each demo that's missing it.
+- **Rename a parameter:** changing `name` only changes what's displayed. Changing `key` means renaming it under `scores:` in every demo; the build flags each old key as `Unrecognized key`.
+- **Remove a parameter:** delete the entry, then delete its key from every demo (again, the build lists them).
+
+Parameters with `unit: usd` (budget) are dollar amounts: no meter, and a log scale on the plot. Everything else is 0–10.
 
 ### The rest of the file (Markdown)
 
@@ -60,7 +72,9 @@ If you change the Markdown plugins in `src/plugins/`, stop the dev server and de
 | Path | What |
 |---|---|
 | `src/content.config.ts` | Demo schema: the allowed fields at the top of each `index.md` |
-| `src/data/attributes.ts` | The 8 attributes (names, order, formatting) |
+| `src/data/rubric.yaml` | The scoring parameters and rubric text (see above) |
+| `src/data/parameters.ts`, `src/lib/scores.ts` | Load and check `rubric.yaml`; format scores and meters |
+| `src/pages/resources/rubric.astro` | Scoring rubric page |
 | `src/plugins/remark-demo.mjs`, `rehype-demo.mjs` | Turn the Markdown conventions above into the page layout |
 | `src/lib/svg.ts` | Prepares SVG diagrams for placing directly in the page (cleans Inkscape metadata, fixes wrapped-text positions for Chrome) |
 | `src/pages/index.astro`, `src/scripts/selector.ts` | Demo Selector (plot, preview, sortable list) |

@@ -1,19 +1,28 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { PARAMETERS } from './data/parameters';
 
-// A score is a single number (5) or a range ([7, 9]) on the 0–10 scale.
-const scoreValue = z.number().int().min(0).max(10);
-const score = z
-  .union([scoreValue, z.tuple([scoreValue, scoreValue])])
-  .transform((v) => (Array.isArray(v) ? { lo: v[0], hi: v[1] } : { lo: v, hi: v }))
-  .refine((r) => r.lo <= r.hi, { message: 'Score range must be written [low, high]' });
+// Each value is a single number (5) or a range ([7, 9]):
+// 0–10 for score parameters, any dollar amount for usd parameters (budget).
+function rangeOf(value: z.ZodNumber, what: string) {
+  return z
+    .union([value, z.tuple([value, value])], {
+      error: (issue) =>
+        issue.input === undefined
+          ? `Missing: every parameter in src/data/rubric.yaml needs a score (${what})`
+          : `Must be ${what}`,
+    })
+    .transform((v) => (Array.isArray(v) ? { lo: v[0], hi: v[1] } : { lo: v, hi: v }))
+    .refine((r) => r.lo <= r.hi, { message: 'A range must be written [low, high]' });
+}
+const scoreRange = rangeOf(z.number().int().min(0).max(10), 'a whole number 0–10, or a range like [3, 5]');
+const dollarRange = rangeOf(z.number().nonnegative(), 'a dollar amount, or a range like [50, 100]');
 
-// Budget in dollars: a single number (40) or a range ([250, 1000]).
-const budget = z
-  .union([z.number().nonnegative(), z.tuple([z.number().nonnegative(), z.number().nonnegative()])])
-  .transform((v) => (Array.isArray(v) ? { lo: v[0], hi: v[1] } : { lo: v, hi: v }))
-  .refine((r) => r.lo <= r.hi, { message: 'Budget range must be written [low, high]' });
+// `scores:` must list exactly the parameters in src/data/rubric.yaml; unknown keys are errors.
+const scores = z.strictObject(
+  Object.fromEntries(PARAMETERS.map((p) => [p.key, p.unit === 'usd' ? dollarRange : scoreRange])),
+);
 
 export const NEED_LEVELS = [
   'required',
@@ -41,16 +50,7 @@ const demos = defineCollection({
       diagramAlt: z.string().optional(),
       thumbnail: image().optional(),
       photos: z.array(z.object({ src: image(), alt: z.string() })).default([]),
-      budget,
-      scores: z.object({
-        tools: score,
-        assembly: score,
-        portability: score,
-        setupTime: score,
-        demoComplexity: score,
-        conceptComplexity: score,
-        wow: score,
-      }),
+      scores,
       // The supplies table is built from this list by src/plugins/rehype-demo.mjs.
       supplies: z
         .array(

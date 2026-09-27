@@ -1,11 +1,16 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { withBase } from '../../lib/url';
+import { PARAMETERS } from '../../data/parameters';
 ---
 
 <Base title="Resources" nav="resources" footerLink={{ label: '← All demos', href: '/' }}>
   <div class="container simple-page">
     <h1>Resources</h1>
+    <p>
+      <a href={withBase('/resources/rubric/')}>Scoring rubric</a>: what each score from 0 to 10 means for the
+      {PARAMETERS.length} parameters every demo is scored on.
+    </p>
     <p>
       Recommendations for light sources and optomechanics that work across many of our demos are coming soon. In the
       meantime, each <a href={withBase('/')}>demo page</a> lists the specific supplies it needs.

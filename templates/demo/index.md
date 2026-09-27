@@ -17,18 +17,18 @@ added: 2026-01-31 # YYYY-MM-DD, used for "most recent" sorting
 #   - { src: ./photo-1.jpg, alt: What the photo shows }
 #   - { src: ./photo-2.jpg, alt: What the photo shows }
 
-# Budget in dollars: one number (40) or a range ([250, 1000]).
-budget: [50, 100]
-
-# Scores are 0–10: one number (5) or a range ([7, 9]).
+# One entry per parameter in src/data/rubric.yaml — see the Scoring rubric page for what each
+# number means. Each is one number (5) or a range ([7, 9]): 0–10, except budget, which is in dollars.
 scores:
-  tools: 3              # Required tools
-  assembly: [4, 5]      # Assembly complexity
+  budget: [50, 100]
+  tools: 3                   # Required tools
+  manufacturingDifficulty: [4, 5]
+  alignmentDifficulty: 2
   portability: 7
   setupTime: 3
-  demoComplexity: 4     # Complexity of demonstration
-  conceptComplexity: 5  # Complexity of underlying concepts
-  wow: 8                # WOW factor
+  presentationComplexity: 4
+  conceptComplexity: 5
+  wow: 8                     # WOW factor
 
 # Shown as a table under the "## Supplies" heading.
 # need: required | effectively-required | likely-required | maybe-required |

@@ -3,7 +3,8 @@ import { getCollection } from 'astro:content';
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Meter from '../components/Meter.astro';
-import { ATTRIBUTES, formatBudget, formatScore, type Range } from '../data/attributes';
+import { PARAMETERS, PARAMETER_INFO } from '../data/parameters';
+import { formatValue, type Range } from '../lib/scores';
 import { withBase } from '../lib/url';
 
 const demos = (await getCollection('demos', (d) => !d.data.draft)).sort(
@@ -26,19 +27,21 @@ const items = await Promise.all(
       img: src ? (await getImage({ src, width: 952, format: 'webp' })).src : null,
       thumb: src ? (await getImage({ src, width: 216, format: 'webp' })).src : null,
       isDiagram: !photo && !!d.diagram,
-      ranges: { budget: d.budget, ...d.scores } as Record<string, Range>,
+      ranges: d.scores as Record<string, Range>,
     };
   }),
 );
 type Item = (typeof items)[number];
 
-const cellValue = (item: Item, key: string, compact = false) =>
-  key === 'budget' ? formatBudget(item.ranges.budget, compact) : formatScore(item.ranges[key]);
+const cellValue = (item: Item, p: (typeof PARAMETERS)[number], compact = false) =>
+  formatValue(p.unit, item.ranges[p.key], compact);
 
 const featured = items[0];
-const defaultX = 'budget';
-const defaultY = 'conceptComplexity';
-const labelOf = (key: string) => ATTRIBUTES.find((a) => a.key === key)!.label;
+// Default plot axes. If a key here is ever removed from rubric.yaml, fall back to the first parameters.
+const axisOrFallback = (key: string, i: number) => (PARAMETERS.some((p) => p.key === key) ? key : PARAMETERS[i].key);
+const defaultX = axisOrFallback('budget', 0);
+const defaultY = axisOrFallback('conceptComplexity', 1);
+const labelOf = (key: string) => PARAMETERS.find((p) => p.key === key)!.name;
 const chevronDown = 'M2 4l4 4 4-4';
 const chevronUp = 'M2 8l4-4 4 4';
 ---
@@ -62,7 +65,7 @@ const chevronUp = 'M2 8l4-4 4 4';
           </div>
         </div>
         <div class="y-ticks" aria-hidden="true"></div>
-        <div class="plot" role="group" aria-label="Demos plotted by the selected attributes"></div>
+        <div class="plot" role="group" aria-label="Demos plotted by the selected parameters"></div>
 
         <div class="x-ticks" aria-hidden="true"></div>
 
@@ -89,12 +92,12 @@ const chevronUp = 'M2 8l4-4 4 4';
               <p class="preview-sub">{featured.subtitle}</p>
             </div>
             <div class="preview-attrs">
-              {ATTRIBUTES.map((a) => (
+              {PARAMETERS.map((p) => (
                 <div class="preview-attr">
-                  <span class="preview-attr-label">{a.label}</span>
+                  <span class="preview-attr-label">{p.name}</span>
                   <div class="preview-attr-val">
-                    {a.key === 'budget' ? <span /> : <Meter range={featured.ranges[a.key]} size="md" />}
-                    <span class="mono">{cellValue(featured, a.key)}</span>
+                    {p.unit === 'usd' ? <span /> : <Meter range={featured.ranges[p.key]} size="md" />}
+                    <span class="mono">{cellValue(featured, p)}</span>
                   </div>
                 </div>
               ))}
@@ -113,14 +116,14 @@ const chevronUp = 'M2 8l4-4 4 4';
         <span class="mono muted hint">Click a column to sort</span>
       </div>
 
-      <div>
+      <div style={`--params: ${PARAMETERS.length}`}>
         <div class="demo-grid list-head">
           <span></span>
           <span class="list-head-label">Demo</span>
           {
-            ATTRIBUTES.map((a) => (
-              <button type="button" class="sort-btn" data-sort={a.key} aria-pressed="false" title={`Sort by ${a.full}`}>
-                <span>{a.short}</span>
+            PARAMETERS.map((p) => (
+              <button type="button" class="sort-btn" data-sort={p.key} aria-pressed="false" title={`Sort by ${p.name}`}>
+                <span>{p.short}</span>
                 <span class="arrow" aria-hidden="true">↕</span>
               </button>
             ))
@@ -143,11 +146,11 @@ const chevronUp = 'M2 8l4-4 4 4';
                     <span class="demo-row-title">{item.title}</span>
                     <span class="demo-row-sub">{item.subtitle}</span>
                   </span>
-                  {ATTRIBUTES.map((a) => (
+                  {PARAMETERS.map((p) => (
                     <span class="demo-cell">
-                      <span class="visually-hidden">{a.label}:</span>
-                      <span class="mono">{cellValue(item, a.key, true)}</span>
-                      {a.key !== 'budget' && <Meter range={item.ranges[a.key]} size="sm" />}
+                      <span class="visually-hidden">{p.name}:</span>
+                      <span class="mono">{cellValue(item, p, true)}</span>
+                      {p.unit !== 'usd' && <Meter range={item.ranges[p.key]} size="sm" />}
                     </span>
                   ))}
                   <span class="demo-date">{item.added}</span>
@@ -160,7 +163,7 @@ const chevronUp = 'M2 8l4-4 4 4';
     </section>
   </div>
 
-  <script type="application/json" id="demo-data" set:html={JSON.stringify({ items, defaultX, defaultY }).replace(/</g, '\\u003c')} />
+  <script type="application/json" id="demo-data" set:html={JSON.stringify({ items, parameters: PARAMETER_INFO, defaultX, defaultY }).replace(/</g, '\\u003c')} />
 </Base>
 
 <script>

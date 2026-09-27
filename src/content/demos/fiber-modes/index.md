@@ -10,13 +10,15 @@ diagramAlt: >-
   through a polarizer. Below, the patterns on the screen: a smooth round spot for single-mode fiber,
   a two-lobed pattern for few-mode fiber, and a grainy speckle pattern for multi-mode fiber.
 
-budget: [50, 100]
+# Scores: see /resources/rubric/ for what each number means.
 scores:
+  budget: [50, 100]
   tools: [1, 3]
-  assembly: [2, 3]
+  manufacturingDifficulty: [2,3]
+  alignmentDifficulty: 0
   portability: [6, 7]
   setupTime: [2, 3]
-  demoComplexity: [5, 7]
+  presentationComplexity: [5,8]
   conceptComplexity: [6, 8]
   wow: 4
 

@@ -11,19 +11,21 @@ diagramAlt: >-
   turn, lighting up that mode on the screen.
 
 # Photos go in this folder, then list them here (the first one is also the thumbnail):
-# photos:
-#   - { src: ./photo-1.jpg, alt: The assembled cavity on a breadboard }
+photos:
+  - { src: ./mode_filter_at_event.jpg, alt: The assembled cavity on a breadboard }
 #   - { src: ./photo-2.jpg, alt: Mode patterns on the viewing screen }
 
-budget: [250, 1000]
+# Scores: see /resources/rubric/ for what each number means.
 scores:
+  budget: [250, 1000]
   tools: [2, 3]
-  assembly: [5, 6]
+  manufacturingDifficulty: 4
+  alignmentDifficulty: 5
   portability: [3, 4]
   setupTime: [3, 4]
-  demoComplexity: [7, 9]
+  presentationComplexity: [7, 9]
   conceptComplexity: [7, 9]
-  wow: 5
+  wow: [2, 4]
 
 supplies:
   - item: Small HeNe laser

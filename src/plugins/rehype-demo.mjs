@@ -56,7 +56,8 @@ function suppliesTable(supplies) {
   ]);
   const rows = supplies.map((s) => {
     const cost = Array.isArray(s.cost) ? s.cost : s.cost ? [s.cost] : [];
-    const costCell = cost.flatMap((line, i) => (i ? [h('br'), line] : [line]));
+    // One span per line: stacked on wide screens, joined with " · " on phones (see global.css).
+    const costCell = cost.map((line) => h('span.cost-line', line));
     const link = s.link
       ? s.link.url
         ? h('a', { href: s.link.url }, s.link.label)
@@ -71,7 +72,7 @@ function suppliesTable(supplies) {
       ]),
       h('td.supply-details', inlineMarkdown(s.details)),
       h('td.supply-cost', costCell),
-      h('td', [link]),
+      h('td.supply-link', [link]),
     ]);
   });
   return h('div.supplies-wrap', [h('table.supplies', [head, h('tbody', rows)])]);

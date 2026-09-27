@@ -72,6 +72,17 @@ const panels = PARAMETERS.map((p, i) => ({
 
     <!-- Without JavaScript every parameter is shown in turn; with it, only the selected one. -->
     <script is:inline>document.documentElement.classList.add('js');</script>
+
+    <!-- Narrower screens: a sticky picker replaces the sidebar (needs JavaScript, so hidden without it) -->
+    <div class="rubric-picker">
+      <button type="button" class="picker-step" data-step="-1" aria-label="Previous parameter">←</button>
+      <label class="visually-hidden" for="param-select">Parameter</label>
+      <select id="param-select" class="select">
+        {panels.map((p) => <option value={p.key}>{p.num} · {p.name}</option>)}
+      </select>
+      <button type="button" class="picker-step" data-step="1" aria-label="Next parameter">→</button>
+    </div>
+
     <div class="rubric-panels">
       {
         panels.map((p) => (
@@ -117,9 +128,14 @@ const panels = PARAMETERS.map((p, i) => ({
   const panels = [...document.querySelectorAll<HTMLElement>('.rubric-panel')];
   const railLinks = [...document.querySelectorAll<HTMLAnchorElement>('.rubric-rail a[data-key]')];
   const container = document.querySelector<HTMLElement>('.rubric-panels');
+  const select = document.querySelector<HTMLSelectElement>('#param-select');
+  const steps = [...document.querySelectorAll<HTMLButtonElement>('.picker-step')];
+  const nameOf = (panel: HTMLElement) => panel.querySelector('h2')?.textContent ?? '';
+  let currentIndex = 0;
 
   function show(key: string | null) {
     const target = panels.find((p) => p.dataset.key === key) ?? panels[0];
+    currentIndex = panels.indexOf(target);
     panels.forEach((p) => p.classList.toggle('is-active', p === target));
     railLinks.forEach((a) => {
       const on = a.dataset.key === target.dataset.key;
@@ -127,17 +143,33 @@ const panels = PARAMETERS.map((p, i) => ({
       if (on) a.setAttribute('aria-current', 'true');
       else a.removeAttribute('aria-current');
     });
+    if (select) select.value = target.dataset.key!;
+    steps.forEach((b) => {
+      const other = panels[(currentIndex + Number(b.dataset.step) + panels.length) % panels.length];
+      b.setAttribute('aria-label', `${Number(b.dataset.step) < 0 ? 'Previous' : 'Next'} parameter: ${nameOf(other)}`);
+    });
+  }
+
+  function choose(key: string) {
+    history.replaceState(null, '', `#${key}`);
+    show(key);
+    // Bring the top of the parameter back into view if the reader had scrolled past it.
+    if (container && container.getBoundingClientRect().top < 0) container.scrollIntoView({ behavior: 'smooth' });
   }
 
   document.addEventListener('click', (e) => {
     const link = (e.target as Element).closest<HTMLAnchorElement>('a[data-key]');
-    if (!link || !container) return;
+    if (!link) return;
     e.preventDefault();
-    history.replaceState(null, '', `#${link.dataset.key}`);
-    show(link.dataset.key!);
-    // Bring the top of the parameter back into view if the reader had scrolled past it.
-    if (container.getBoundingClientRect().top < 0) container.scrollIntoView({ behavior: 'smooth' });
+    choose(link.dataset.key!);
   });
+  select?.addEventListener('change', () => choose(select.value));
+  steps.forEach((b) =>
+    b.addEventListener('click', () => {
+      const next = panels[(currentIndex + Number(b.dataset.step) + panels.length) % panels.length];
+      choose(next.dataset.key!);
+    }),
+  );
   window.addEventListener('hashchange', () => show(location.hash.slice(1)));
   show(location.hash.slice(1) || null);
 </script>

@@ -79,7 +79,7 @@ If you change the Markdown plugins in `src/plugins/`, stop the dev server and de
 | `src/lib/svg.ts` | Prepares SVG diagrams for placing directly in the page (cleans Inkscape metadata, fixes wrapped-text positions for Chrome) |
 | `src/pages/index.astro`, `src/scripts/selector.ts` | Demo Selector (plot, preview, sortable list) |
 | `src/pages/demos/[slug].astro` | Demo page template |
-| `src/styles/global.css` | Design tokens and all styles |
+| `src/styles/global.css` | Design tokens and all styles. The desktop design comes first; the "Responsive" section at the end adapts it for narrow windows (≤1199px), tablets (≤959px) and phones (≤719px) |
 | `templates/demo/` | Starting point for a new demo |
 
 ## Deployment

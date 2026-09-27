@@ -1,4 +1,4 @@
-// Front page interactivity: scatter plot, axis dropdowns, hover preview, sortable list.
+// Front page interactivity: scatter plot, axis dropdowns, hover/tap preview, sortable list.
 // The parameters (from src/data/rubric.yaml) arrive with the demo data, so nothing here is hard-coded.
 import { formatValue, segments, type Range, type Unit } from '../lib/scores';
 
@@ -21,28 +21,31 @@ interface Item {
   ranges: Record<string, Range>;
 }
 
-const PLOT = 538; // inner size of the 540px plot (1px border)
-const U = PLOT / 11; // one score unit: 11 positions for scores 0–10
-const MARK = 14; // mark thickness
-
 interface Axis {
   ticks: { v: number; label: string }[];
   pos: (v: number) => number;
 }
 
-const scoreAxis: Axis = {
-  ticks: Array.from({ length: 11 }, (_, i) => ({ v: i, label: String(i) })),
-  pos: (v) => (v + 0.5) * U,
-};
+/** Score axis 0–10 across a plot `size` px wide: 11 positions, one unit each. */
+function scoreAxis(size: number): Axis {
+  const u = size / 11;
+  return {
+    ticks: Array.from({ length: 11 }, (_, i) => ({ v: i, label: String(i) })),
+    pos: (v) => (v + 0.5) * u,
+  };
+}
 
-// Dollar parameters (budget) aren't 0–10: log scale from $10 to $10k, using the same span as scores 0–10.
-const dollarAxis: Axis = {
-  ticks: [10, 30, 100, 300, 1000, 3000, 10000].map((v) => ({
-    v,
-    label: v >= 1000 ? `$${v / 1000}k` : `$${v}`,
-  })),
-  pos: (v) => U / 2 + ((Math.log10(Math.min(Math.max(v, 10), 10000)) - 1) / 3) * (U * 10),
-};
+/** Dollar parameters (budget) aren't 0–10: log scale from $10 to $10k over the same span as scores 0–10. */
+function dollarAxis(size: number): Axis {
+  const u = size / 11;
+  return {
+    ticks: [10, 30, 100, 300, 1000, 3000, 10000].map((v) => ({
+      v,
+      label: v >= 1000 ? `$${v / 1000}k` : `$${v}`,
+    })),
+    pos: (v) => u / 2 + ((Math.log10(Math.min(Math.max(v, 10), 10000)) - 1) / 3) * (u * 10),
+  };
+}
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -63,7 +66,6 @@ export function initSelector() {
   };
 
   const paramOf = (key: string) => parameters.find((p) => p.key === key)!;
-  const axisFor = (key: string) => (paramOf(key).unit === 'usd' ? dollarAxis : scoreAxis);
   const labelOf = (key: string) => paramOf(key)?.name ?? key;
   const valueOf = (item: Item, key: string, compact = false) =>
     formatValue(paramOf(key).unit, item.ranges[key], compact);
@@ -75,12 +77,16 @@ export function initSelector() {
 
   const state = { x: defaultX, y: defaultY, active: items[0]?.id ?? null };
   const geometry = new Map<string, { left: number; bottom: number; w: number; h: number }>();
+  let plotSize = 0; // inner width of the plot in px; the plot is square and resizes with the page
 
   // ───────── Plot ─────────
 
   function renderPlot() {
+    plotSize = plot.clientWidth;
+    const axisFor = (key: string) => (paramOf(key).unit === 'usd' ? dollarAxis : scoreAxis)(plotSize);
     const ax = axisFor(state.x);
     const ay = axisFor(state.y);
+    const mark = plotSize < 400 ? 12 : 14; // mark thickness
     plot.replaceChildren();
     xTicks.replaceChildren();
     yTicks.replaceChildren();
@@ -98,9 +104,12 @@ export function initSelector() {
     for (const item of items) {
       const rx = item.ranges[state.x];
       const ry = item.ranges[state.y];
-      const left = ax.pos(rx.lo) - MARK / 2;
-      const bottom = ay.pos(ry.lo) - MARK / 2;
-      const g = { left, bottom, w: ax.pos(rx.hi) - ax.pos(rx.lo) + MARK, h: ay.pos(ry.hi) - ay.pos(ry.lo) + MARK };
+      const g = {
+        left: ax.pos(rx.lo) - mark / 2,
+        bottom: ay.pos(ry.lo) - mark / 2,
+        w: ax.pos(rx.hi) - ax.pos(rx.lo) + mark,
+        h: ay.pos(ry.hi) - ay.pos(ry.lo) + mark,
+      };
       geometry.set(item.id, g);
 
       const a = el('a', 'mark', {
@@ -115,16 +124,27 @@ export function initSelector() {
         'aria-label',
         `${item.title} — ${labelOf(state.x)} ${valueOf(item, state.x)}, ${labelOf(state.y)} ${valueOf(item, state.y)}`,
       );
-      a.addEventListener('mouseenter', () => setActive(item.id));
+
+      // Mouse: hovering previews, clicking opens. Touch/pen: the first tap previews, a second tap opens.
+      let tapWasActive = true;
+      a.addEventListener('pointerenter', (e) => {
+        if (e.pointerType === 'mouse') setActive(item.id);
+      });
+      a.addEventListener('pointerdown', (e) => {
+        tapWasActive = e.pointerType === 'mouse' || state.active === item.id;
+      });
+      a.addEventListener('click', (e) => {
+        if (!tapWasActive) {
+          e.preventDefault();
+          setActive(item.id);
+        }
+        tapWasActive = true;
+      });
       a.addEventListener('focus', () => setActive(item.id));
       plot.append(a);
     }
 
-    plot.append(
-      el('span', 'guide guide--v'),
-      el('span', 'guide guide--h'),
-      el('span', 'mark-tag'),
-    );
+    plot.append(el('span', 'guide guide--v'), el('span', 'guide guide--h'), el('span', 'mark-tag'));
     setActive(state.active);
   }
 
@@ -148,12 +168,17 @@ export function initSelector() {
     const tw = tag.offsetWidth;
     const th = tag.offsetHeight;
     let tagBottom = g.bottom + g.h + 3;
-    if (tagBottom + th > PLOT) tagBottom = g.bottom - th - 3; // no room above: put it below
-    const tagLeft = Math.max(0, Math.min(g.left, PLOT - tw));
+    if (tagBottom + th > plotSize) tagBottom = g.bottom - th - 3; // no room above: put it below
+    const tagLeft = Math.max(0, Math.min(g.left, plotSize - tw));
     Object.assign(tag.style, { left: `${tagLeft}px`, bottom: `${tagBottom}px` });
 
     renderPreview(item);
   }
+
+  // Re-draw when the plot changes size (window resize, rotating a phone).
+  new ResizeObserver(() => {
+    if (plot.clientWidth !== plotSize) renderPlot();
+  }).observe(plot);
 
   // ───────── Preview panel ─────────
 
@@ -166,18 +191,23 @@ export function initSelector() {
     media.innerHTML = item.img ? `<img src="${esc(item.img)}" alt="">` : '';
     preview.querySelector('.preview-title')!.textContent = item.title;
     preview.querySelector('.preview-sub')!.textContent = item.subtitle;
-    preview.querySelector('.preview-attrs')!.innerHTML = parameters.map(
-      (p) => `<div class="preview-attr">
+    // On phones only the two plotted parameters are shown (.is-plotted); see global.css.
+    preview.querySelector('.preview-attrs')!.innerHTML = parameters
+      .map(
+        (p) => `<div class="preview-attr${p.key === state.x || p.key === state.y ? ' is-plotted' : ''}" data-key="${esc(p.key)}">
         <span class="preview-attr-label">${esc(p.name)}</span>
         <div class="preview-attr-val">
           ${p.unit === 'usd' ? '<span></span>' : meterHtml(item.ranges[p.key], 'md')}
           <span class="mono">${esc(valueOf(item, p.key))}</span>
         </div>
       </div>`,
-    ).join('');
+      )
+      .join('');
   }
 
   // ───────── Axis dropdowns ─────────
+  // Each axis has two pickers: the desktop ones on the plot's axes and the phone ones above the
+  // plot (.dd--bar). CSS shows one set; both stay in sync.
 
   const dropdowns = [...document.querySelectorAll<HTMLElement>('.dd')].map((root) => {
     const which = root.dataset.axis as 'x' | 'y';
@@ -185,10 +215,12 @@ export function initSelector() {
     const menu = root.querySelector<HTMLElement>('.dd-menu')!;
     const label = root.querySelector<HTMLElement>('.dd-label')!;
 
-    menu.innerHTML = parameters.map(
-      (p) =>
-        `<li role="none"><button type="button" role="option" class="dd-option" data-key="${esc(p.key)}" aria-selected="false">${esc(p.name)}</button></li>`,
-    ).join('');
+    menu.innerHTML = parameters
+      .map(
+        (p) =>
+          `<li role="none"><button type="button" role="option" class="dd-option" data-key="${esc(p.key)}" aria-selected="false">${esc(p.name)}</button></li>`,
+      )
+      .join('');
     const options = [...menu.querySelectorAll<HTMLButtonElement>('.dd-option')];
 
     function sync() {
@@ -213,7 +245,7 @@ export function initSelector() {
     options.forEach((o) =>
       o.addEventListener('click', () => {
         state[which] = o.dataset.key!;
-        sync();
+        dropdowns.forEach((d) => d.sync());
         close();
         renderPlot();
       }),
@@ -233,9 +265,9 @@ export function initSelector() {
     });
 
     const api = { root, close, sync };
-    sync();
     return api;
   });
+  dropdowns.forEach((d) => d.sync());
 
   document.addEventListener('click', (e) => {
     dropdowns.forEach((d) => {
@@ -244,11 +276,16 @@ export function initSelector() {
   });
 
   // ───────── Sortable list ─────────
+  // Wide screens sort by clicking column headers; narrower ones use the sort menu and direction
+  // button (.sort-bar), and each row shows only the sorted value (.is-sorted).
 
   const list = document.querySelector<HTMLElement>('.demo-list');
   const sortButtons = [...document.querySelectorAll<HTMLButtonElement>('.sort-btn')];
+  const sortSelect = document.querySelector<HTMLSelectElement>('#sort-select');
+  const sortDir = document.querySelector<HTMLButtonElement>('.sort-dir');
   const sort = { key: 'added', dir: -1 };
 
+  const isDollars = (key: string) => key !== 'added' && paramOf(key).unit === 'usd';
   const sortValue = (item: Item, key: string) => {
     if (key === 'added') return Date.parse(item.added);
     const r = item.ranges[key];
@@ -273,20 +310,38 @@ export function initSelector() {
       b.setAttribute('aria-pressed', String(on));
       b.querySelector('.arrow')!.textContent = on ? (sort.dir < 0 ? '↓' : '↑') : '↕';
     });
+    list.querySelectorAll<HTMLElement>('.demo-cell, .demo-date').forEach((c) => {
+      c.classList.toggle('is-sorted', (c.dataset.key ?? 'added') === sort.key);
+    });
+    if (sortSelect) sortSelect.value = sort.key;
+    if (sortDir) {
+      sortDir.textContent = sort.dir < 0 ? '↓' : '↑';
+      const label =
+        sort.key === 'added'
+          ? sort.dir < 0 ? 'Newest first' : 'Oldest first'
+          : isDollars(sort.key)
+            ? sort.dir < 0 ? 'Most expensive first' : 'Cheapest first'
+            : sort.dir < 0 ? 'Highest first' : 'Lowest first';
+      sortDir.setAttribute('aria-label', label);
+    }
   }
 
-  sortButtons.forEach((b) =>
-    b.addEventListener('click', () => {
-      const key = b.dataset.sort!;
-      if (key === sort.key) sort.dir *= -1;
-      else {
-        sort.key = key;
-        // Dollar amounts cheapest first; scores and dates highest/newest first.
-        sort.dir = key !== 'added' && paramOf(key).unit === 'usd' ? 1 : -1;
-      }
-      applySort();
-    }),
-  );
+  function sortBy(key: string) {
+    if (key === sort.key) sort.dir *= -1;
+    else {
+      sort.key = key;
+      // Dollar amounts cheapest first; scores and dates highest/newest first.
+      sort.dir = isDollars(key) ? 1 : -1;
+    }
+    applySort();
+  }
+
+  sortButtons.forEach((b) => b.addEventListener('click', () => sortBy(b.dataset.sort!)));
+  sortSelect?.addEventListener('change', () => sortBy(sortSelect.value));
+  sortDir?.addEventListener('click', () => {
+    sort.dir *= -1;
+    applySort();
+  });
 
   renderPlot();
 }

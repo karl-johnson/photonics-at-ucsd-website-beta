@@ -84,7 +84,7 @@ const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
         photoSlots.map((p, i) =>
           p ? (
             <figure class="photo">
-              <Image src={p.src} alt={p.alt} widths={[448, 896]} sizes="448px" />
+              <Image src={p.src} alt={p.alt} widths={[448, 896, 1344]} sizes="(max-width: 719px) 100vw, 448px" />
             </figure>
           ) : (
             <div class:list={['photo', 'placeholder', { 'placeholder--dark': i === 1 }]} aria-hidden="true">
@@ -97,6 +97,25 @@ const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
   </section>
 
   <div class="container demo-body">
+    <!-- Narrower screens: a sticky bar that opens into the section list (replaces the sidebar) -->
+    <details class="toc-bar">
+      <summary>
+        <span class="toc-bar-label">Contents</span>
+        <span class="toc-bar-num">01</span>
+        <span class="toc-bar-current">{sections[0]?.text}</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4l4 4 4-4"></path></svg>
+      </summary>
+      <nav aria-label="On this page">
+        {
+          sections.map((s, i) => (
+            <a href={`#${s.slug}`} data-toc-bar={s.slug}>
+              <span>{String(i + 1).padStart(2, '0')}</span>
+              {s.text}
+            </a>
+          ))
+        }
+      </nav>
+    </details>
     <nav class="toc" aria-label="On this page">
       <span class="toc-label">Contents</span>
       {
@@ -115,11 +134,17 @@ const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
 </Base>
 
 <script>
-  // Highlight the TOC entry for the section currently being read.
+  // Highlight the Contents entry for the section currently being read, in both the sidebar (wide
+  // screens) and the sticky bar (narrower screens).
   const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a[data-toc]')];
+  const barLinks = [...document.querySelectorAll<HTMLAnchorElement>('.toc-bar a[data-toc-bar]')];
+  const bar = document.querySelector<HTMLDetailsElement>('.toc-bar');
+  const barNum = document.querySelector('.toc-bar-num');
+  const barCurrent = document.querySelector('.toc-bar-current');
   const targets = links
     .map((a) => document.getElementById(a.dataset.toc!)?.closest('section'))
     .filter((s): s is HTMLElement => !!s);
+  let shown = -1;
 
   function update() {
     const line = window.innerHeight * 0.3;
@@ -131,8 +156,18 @@ const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
     if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
       current = targets.length - 1;
     }
+    if (current === shown) return;
+    shown = current;
     links.forEach((a, i) => a.classList.toggle('is-active', i === current));
+    barLinks.forEach((a, i) => a.classList.toggle('is-active', i === current));
+    if (barNum) barNum.textContent = String(current + 1).padStart(2, '0');
+    const link = links[current];
+    if (barCurrent && link) {
+      barCurrent.textContent = (link.textContent ?? '').replace(link.querySelector('span')?.textContent ?? '', '').trim();
+    }
   }
+  // Close the bar's list once a section is picked.
+  barLinks.forEach((a) => a.addEventListener('click', () => bar?.removeAttribute('open')));
   update();
   window.addEventListener('scroll', update, { passive: true });
   window.addEventListener('resize', update);

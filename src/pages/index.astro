@@ -51,6 +51,25 @@ const chevronUp = 'M2 8l4-4 4 4';
     <h1 class="home-title">Demo Selector</h1>
 
     <section class="explorer" aria-label="Demo explorer">
+      <div class="plot-col">
+      <!-- Phones: plain X/Y pickers above the plot instead of the axis dropdowns -->
+      <div class="axis-bar">
+        {
+          [
+            { axis: 'x', key: defaultX },
+            { axis: 'y', key: defaultY },
+          ].map((a) => (
+            <div class="dd dd--bar" data-axis={a.axis}>
+              <button type="button" class="dd-button" aria-haspopup="listbox" aria-expanded="false">
+                <span class="dd-axis">{a.axis.toUpperCase()}</span>
+                <span class="dd-label">{labelOf(a.key)}</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d={chevronDown}></path></svg>
+              </button>
+              <ul class="dd-menu" role="listbox" aria-label={`${a.axis.toUpperCase()} axis`} hidden></ul>
+            </div>
+          ))
+        }
+      </div>
       <div class="plot-frame">
         <div class="y-strip">
           <div class="y-dd-anchor">
@@ -80,6 +99,8 @@ const chevronUp = 'M2 8l4-4 4 4';
           </div>
         </div>
       </div>
+      <p class="tap-hint">Tap a demo to preview it</p>
+      </div>
 
       {
         featured && (
@@ -93,7 +114,7 @@ const chevronUp = 'M2 8l4-4 4 4';
             </div>
             <div class="preview-attrs">
               {PARAMETERS.map((p) => (
-                <div class="preview-attr">
+                <div class:list={['preview-attr', { 'is-plotted': p.key === defaultX || p.key === defaultY }]} data-key={p.key}>
                   <span class="preview-attr-label">{p.name}</span>
                   <div class="preview-attr-val">
                     {p.unit === 'usd' ? <span /> : <Meter range={featured.ranges[p.key]} size="md" />}
@@ -102,6 +123,7 @@ const chevronUp = 'M2 8l4-4 4 4';
                 </div>
               ))}
             </div>
+            <span class="preview-open" aria-hidden="true">Open demo <span>→</span></span>
           </a>
         )
       }
@@ -114,6 +136,16 @@ const chevronUp = 'M2 8l4-4 4 4';
           <span class="mono">{items.length} {items.length === 1 ? 'demo' : 'demos'}</span>
         </div>
         <span class="mono muted hint">Click a column to sort</span>
+      </div>
+
+      <!-- Narrower screens: the column headers are replaced by this sort menu -->
+      <div class="sort-bar">
+        <label for="sort-select">Sort by</label>
+        <select id="sort-select" class="select">
+          <option value="added">Date added</option>
+          {PARAMETERS.map((p) => <option value={p.key}>{p.name}</option>)}
+        </select>
+        <button type="button" class="sort-dir" aria-label="Newest first">↓</button>
       </div>
 
       <div style={`--params: ${PARAMETERS.length}`}>
@@ -145,15 +177,16 @@ const chevronUp = 'M2 8l4-4 4 4';
                   <span class="demo-row-text">
                     <span class="demo-row-title">{item.title}</span>
                     <span class="demo-row-sub">{item.subtitle}</span>
+                    <span class="demo-row-date">Added {item.added}</span>
                   </span>
                   {PARAMETERS.map((p) => (
-                    <span class="demo-cell">
+                    <span class="demo-cell" data-key={p.key}>
                       <span class="visually-hidden">{p.name}:</span>
                       <span class="mono">{cellValue(item, p, true)}</span>
                       {p.unit !== 'usd' && <Meter range={item.ranges[p.key]} size="sm" />}
                     </span>
                   ))}
-                  <span class="demo-date">{item.added}</span>
+                  <span class="demo-date is-sorted">{item.added}</span>
                 </a>
               </li>
             ))

@@ -1,8 +1,11 @@
-// HTML-level layout for demo pages. Turns plain rendered Markdown into the design's blocks:
+// HTML-level layout for demo and resource pages. Turns plain rendered Markdown into the design's blocks:
+//   text before the first ##→ intro paragraph(s) (class "doc-intro")
 //   ## Heading             → numbered <section> (01, 02, …) with the ink rule
 //   ### Topic              → row: bold title (+ formula chips) on the left, text on the right
 //   `a` `b` right after ###→ formula chips under the row title
 //   1. 2. 3.               → steps with square numbers (class "steps", styled in CSS)
+//   | a | b | tables        → styled data tables; each cell gets its column name for the phone layout
+//   [^1] footnotes          → collected into a final numbered "Notes" section
 //   ## Supplies            → the supplies table from the `supplies:` frontmatter list is added
 // It also prefixes root-relative links and images with the site's base path.
 import { h } from 'hastscript';
@@ -126,11 +129,15 @@ export default function rehypeDemo(options = {}) {
     const supplies = Array.isArray(frontmatter.supplies) ? frontmatter.supplies : [];
     const slugger = new GithubSlugger();
 
-    // 1. Split the document at each h2 into sections.
+    // 1. Split the document at each h2 into sections. GFM footnotes arrive as a final
+    //    <section data-footnotes>; set it aside to become the "Notes" section.
     const intro = [];
     const sections = [];
+    let footnotes = null;
     for (const node of tree.children) {
-      if (isElement(node, 'h2')) {
+      if (isElement(node, 'section') && node.properties?.dataFootnotes !== undefined) {
+        footnotes = node;
+      } else if (isElement(node, 'h2')) {
         sections.push({ heading: node, body: [] });
       } else if (sections.length) {
         sections.at(-1).body.push(node);
@@ -149,11 +156,21 @@ export default function rehypeDemo(options = {}) {
       target.body.push(suppliesTable(supplies));
     }
 
+    // Footnotes → last numbered section, "Notes". Its id stays "footnote-label", which the
+    // footnote references point to with aria-describedby.
+    if (footnotes) {
+      const list = footnotes.children.find((n) => isElement(n, 'ol'));
+      if (list) {
+        addClass(list, 'footnotes-list');
+        sections.push({ heading: h('h2', { id: 'footnote-label' }, 'Notes'), body: [list] });
+      }
+    }
+
     // 3. Build the numbered section markup.
     tree.children = [
-      ...intro,
+      ...(intro.length ? [h('div.doc-intro', intro)] : []),
       ...sections.map((s, i) => {
-        const id = slugger.slug(toString(s.heading));
+        const id = s.heading.properties?.id ?? slugger.slug(toString(s.heading));
         s.heading.properties = { ...s.heading.properties, id };
         const num = String(i + 1).padStart(2, '0');
         return h('section.doc-section', { 'aria-labelledby': id }, [
@@ -163,10 +180,31 @@ export default function rehypeDemo(options = {}) {
       }),
     ];
 
-    // 4. Steps, base-path links.
-    visit(tree, 'element', (node, _index, parent) => {
-      if (node.tagName === 'ol' && isElement(parent) && hasClass(parent, ['section-body', 'row-body'])) {
+    // 4. Steps, data tables, base-path links.
+    visit(tree, 'element', (node, index, parent) => {
+      if (
+        node.tagName === 'ol' &&
+        isElement(parent) &&
+        hasClass(parent, ['section-body', 'row-body']) &&
+        !hasClass(node, ['footnotes-list'])
+      ) {
         addClass(node, 'steps');
+      }
+      if (node.tagName === 'table' && !hasClass(node, ['supplies']) && parent && typeof index === 'number') {
+        // Label every cell with its column name (shown above each value on phones) and wrap the
+        // table so a wide one can scroll sideways instead of stretching the page.
+        addClass(node, 'data-table');
+        const headers = [];
+        visit(node, 'element', (n) => {
+          if (n.tagName === 'th') headers.push(toString(n).trim());
+        });
+        visit(node, 'element', (row) => {
+          if (row.tagName !== 'tr') return;
+          row.children.filter((c) => isElement(c, 'td')).forEach((td, i) => {
+            if (headers[i]) td.properties = { ...td.properties, dataLabel: headers[i] };
+          });
+        });
+        parent.children[index] = h('div.table-wrap', [node]);
       }
       for (const attr of ['href', 'src']) {
         const v = node.properties?.[attr];

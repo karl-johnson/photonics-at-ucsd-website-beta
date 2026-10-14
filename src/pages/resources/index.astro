@@ -1,19 +1,41 @@
 ---
+import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { withBase } from '../../lib/url';
 import { PARAMETERS } from '../../data/parameters';
+
+const pages = (await getCollection('resources', (r) => !r.data.draft)).sort((a, b) => a.data.order - b.data.order);
+
+// The rubric page is generated from src/data/rubric.yaml, so it's listed here by hand.
+const entries = [
+  {
+    href: '/resources/rubric/',
+    title: 'Scoring rubric',
+    subtitle: `What each score from 0 to 10 means for the ${PARAMETERS.length} parameters every demo is scored on.`,
+  },
+  ...pages.map((p) => ({ href: `/resources/${p.id}/`, title: p.data.title, subtitle: p.data.subtitle })),
+];
 ---
 
 <Base title="Resources" nav="resources" footerLink={{ label: '← All demos', href: '/' }}>
-  <div class="container simple-page">
-    <h1>Resources</h1>
-    <p>
-      <a href={withBase('/resources/rubric/')}>Scoring rubric</a>: what each score from 0 to 10 means for the
-      {PARAMETERS.length} parameters every demo is scored on.
-    </p>
-    <p>
-      Recommendations for light sources and optomechanics that work across many of our demos are coming soon. In the
-      meantime, each <a href={withBase('/')}>demo page</a> lists the specific supplies it needs.
-    </p>
+  <section class="container page-hero">
+    <h1 class="demo-title">Resources</h1>
+    <p class="demo-subtitle">Guides that apply across many of our demos.</p>
+  </section>
+
+  <div class="container">
+    <ol class="resource-list">
+      {
+        entries.map((e) => (
+          <li>
+            <a href={withBase(e.href)}>
+              <span class="resource-title">{e.title}</span>
+              <span class="resource-sub">{e.subtitle}</span>
+              <span class="resource-arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
   </div>
 </Base>

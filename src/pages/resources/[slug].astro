@@ -1,0 +1,37 @@
+---
+// A resource page (light sources, optomechanics, …) from src/content/resources/<slug>/index.md.
+// Same Markdown conventions and body layout as demo pages, with a simpler header.
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import DocBody from '../../components/DocBody.astro';
+import { withBase } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('resources', (r) => !r.data.draft);
+  return pages.map((page) => ({ params: { slug: page.id }, props: { page } }));
+}
+
+const { page } = Astro.props;
+const { Content, headings } = await render(page);
+---
+
+<Base
+  title={page.data.title}
+  description={page.data.subtitle}
+  nav="resources"
+  footerLink={{ label: '← All resources', href: '/resources/' }}
+>
+  <section class="container page-hero">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href={withBase('/resources/')}>Resources</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{page.data.title}</span>
+    </nav>
+    <h1 class="demo-title">{page.data.title}</h1>
+    <p class="demo-subtitle">{page.data.subtitle}</p>
+  </section>
+
+  <DocBody headings={headings}>
+    <Content />
+  </DocBody>
+</Base>

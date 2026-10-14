@@ -1213,6 +1213,186 @@ a.cite {
   font-size: 14px;
 }
 
+/* ───────── Resource pages (src/pages/resources/[slug].astro) ───────── */
+
+/* Header without the demo page's side panel */
+.page-hero {
+  padding-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.page-hero .demo-subtitle {
+  max-width: 720px;
+}
+
+/* Text before the first ## heading */
+.doc-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 780px;
+}
+
+/* Markdown tables (| a | b |) */
+.table-wrap {
+  overflow-x: auto;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  line-height: 1.55;
+}
+.data-table th {
+  text-align: left;
+  vertical-align: bottom;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 20px 10px 0;
+  border-bottom: 1px solid var(--ink);
+}
+.data-table td {
+  padding: 16px 20px 16px 0;
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-2);
+}
+.data-table th:last-child,
+.data-table td:last-child {
+  padding-right: 0;
+}
+.data-table td:first-child {
+  font-weight: 600;
+  color: var(--ink);
+  min-width: 140px;
+}
+
+/* :::warning — the note box in solid red, for safety information */
+.note--warning {
+  border-color: var(--accent);
+}
+.note--warning .note-title {
+  background: var(--accent);
+  border-bottom-color: var(--accent);
+  color: #fff;
+}
+.note--warning .note-title::before {
+  content: 'Warning';
+  color: #fff;
+}
+.note--warning > :not(.note-title) {
+  color: var(--ink);
+}
+
+/* Footnotes: [1]-style references, collected in the final "Notes" section */
+.doc sup:has(> a[data-footnote-ref]) {
+  font-size: inherit;
+  vertical-align: baseline;
+}
+a[data-footnote-ref] {
+  font-family: var(--mono);
+  font-size: 13px;
+  margin-left: 2px;
+}
+a[data-footnote-ref]::before {
+  content: '[';
+}
+a[data-footnote-ref]::after {
+  content: ']';
+}
+.footnotes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: note;
+  border-bottom: 1px solid var(--rule);
+}
+.doc .footnotes-list > li {
+  counter-increment: note;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 16px;
+  margin: 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--rule);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  scroll-margin-top: 24px;
+}
+.footnotes-list > li::before {
+  content: '[' counter(note) ']';
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--accent);
+}
+.footnotes-list a[data-footnote-backref] {
+  font-family: var(--mono);
+  font-variant-emoji: text; /* keep ↩ from turning into an emoji on phones */
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+/* A list inside a numbered step: a, b, c */
+.doc ol.steps ol {
+  list-style: lower-alpha;
+  margin: 10px 0 0;
+  padding-left: 22px;
+  color: var(--ink-2);
+}
+
+/* Resources index */
+.resource-list {
+  list-style: none;
+  margin: 56px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--ink);
+}
+.resource-list a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 24px;
+  row-gap: 4px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  text-decoration: none;
+}
+.resource-list a:hover {
+  background: var(--hover-bg);
+}
+.resource-title {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.resource-list a:hover .resource-title {
+  color: var(--accent);
+}
+.resource-sub {
+  grid-column: 1;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.resource-arrow {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--accent);
+}
+
 /* ───────── Simple pages (Resources, About) ───────── */
 
 .simple-page {
@@ -1995,6 +2175,67 @@ a.cite {
     margin-left: auto;
     font-family: var(--mono);
     font-size: 13px;
+  }
+
+  /* Resource pages */
+  .page-hero {
+    padding-top: 24px;
+    gap: 16px;
+  }
+  .doc-intro {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .footnotes-list > li {
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 10px;
+  }
+  .resource-list {
+    margin-top: 32px;
+  }
+  .resource-title {
+    font-size: 18px;
+  }
+  .resource-sub {
+    font-size: 15px;
+  }
+
+  /* Markdown tables → one block per row, each value labelled with its column name */
+  .table-wrap {
+    overflow: visible;
+  }
+  .data-table thead {
+    display: none;
+  }
+  .data-table,
+  .data-table tbody,
+  .data-table tr,
+  .data-table td {
+    display: block;
+  }
+  .data-table tr {
+    padding: 14px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .data-table td {
+    padding: 0;
+    margin-top: 10px;
+    border: 0;
+    font-size: 15px;
+  }
+  .data-table td:first-child {
+    margin-top: 0;
+    font-size: 16px;
+  }
+  .data-table td[data-label]:not(:first-child)::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
   }
 
   /* Rubric */

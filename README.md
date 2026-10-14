@@ -49,12 +49,21 @@ Write ordinary Markdown. The page layout comes from a few conventions:
 | `## Supplies` | The supplies table (from `supplies:` at the top). |
 | `1.` `2.` `3.` list | Steps with square numbers. |
 | `:::note[Title]` … `:::` | A boxed note. |
+| `:::warning[Title]` … `:::` | The same box in red, labelled WARNING, for safety information. |
+| `\| a \| b \|` Markdown tables | A styled table. On phones, each row becomes a block with every value labelled by its column name. |
+| `text[^name]` and `[^name]: note text` | A `[1]`-style footnote; the notes are collected into a final numbered "Notes" section. |
+| Text before the first `##` | An intro paragraph, in larger type. |
+| A numbered list inside a numbered list | Lettered sub-steps (a, b, c). |
 | `### Topic` then paragraphs | A row: the title on the left, the text on the right. |
 | A line of only `` `code` `` right after a `###` | Formula chips under the row title. |
 | `[ref](https://…)` | A small `[ref]` citation link. |
 | `**bold**`, `*italic*`, `[links](…)`, `- bullets` | As usual. |
 
 Links to other pages on this site should start with `/` (e.g. `/resources/`). The site's base path is added automatically.
+
+## Adding or editing a resource page
+
+Resource pages (Light Sources, Optomechanics, …) live in `src/content/resources/<page-name>/index.md` and appear at `/resources/<page-name>/` and on the Resources page. The top of the file needs `title`, `subtitle` and `order` (position on the Resources page, lowest first). The rest uses exactly the same Markdown conventions as demo pages above. The scoring rubric is the exception: it's generated from `src/data/rubric.yaml`.
 
 ## Development
 
@@ -79,6 +88,8 @@ If you change the Markdown plugins in `src/plugins/`, stop the dev server and de
 | `src/lib/svg.ts` | Prepares SVG diagrams for placing directly in the page (cleans Inkscape metadata, fixes wrapped-text positions for Chrome) |
 | `src/pages/index.astro`, `src/scripts/selector.ts` | Demo Selector (plot, preview, sortable list) |
 | `src/pages/demos/[slug].astro` | Demo page template |
+| `src/pages/resources/[slug].astro`, `src/pages/resources/index.astro` | Resource page template and the Resources page |
+| `src/components/DocBody.astro` | Page body shared by demo and resource pages: Contents sidebar / sticky bar + the Markdown |
 | `src/styles/global.css` | Design tokens and all styles. The desktop design comes first; the "Responsive" section at the end adapts it for narrow windows (≤1199px), tablets (≤959px) and phones (≤719px) |
 | `templates/demo/` | Starting point for a new demo |
 

@@ -1,6 +1,7 @@
-// Markdown-level conventions for demo pages (runs after remark-directive):
-//   :::note[Title] … :::   → boxed NOTE callout
-//   [ref](url)             → small mono "[ref]" citation link
+// Markdown-level conventions for demo and resource pages (runs after remark-directive):
+//   :::note[Title] … :::     → boxed NOTE callout
+//   :::warning[Title] … :::  → the same box in red, labelled WARNING (safety information)
+//   [ref](url)               → small mono "[ref]" citation link
 // Any other `:name` text that remark-directive picked up by accident (e.g. "ratio 1:x")
 // is turned back into plain text so writers never lose characters.
 import { visit, SKIP } from 'unist-util-visit';
@@ -8,8 +9,9 @@ import { visit, SKIP } from 'unist-util-visit';
 export default function remarkDemo() {
   return (tree) => {
     visit(tree, (node, index, parent) => {
-      if (node.type === 'containerDirective' && node.name === 'note') {
-        node.data = { ...node.data, hName: 'aside', hProperties: { className: ['note'] } };
+      if (node.type === 'containerDirective' && (node.name === 'note' || node.name === 'warning')) {
+        const className = node.name === 'warning' ? ['note', 'note--warning'] : ['note'];
+        node.data = { ...node.data, hName: 'aside', hProperties: { className } };
         const label = node.children[0]?.data?.directiveLabel ? node.children[0] : null;
         if (label) {
           label.data = { ...label.data, hName: 'div', hProperties: { className: ['note-title'] } };

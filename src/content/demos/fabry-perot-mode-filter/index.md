@@ -33,9 +33,9 @@ supplies:
     details: >-
       Polarized laser source with only one or a few lasing longitudinal modes, each with a linewidth
       narrower than that of the FP cavity's resonances. Used lasers like the JDSU 1508 "Novette" can
-      be found at modest cost and reused for many demos — more on our [light sources page](/resources/).
+      be found at modest cost and reused for many demos — more on our [light sources page](/resources/light-sources/#affordable-hene-lasers).
     cost: ["$200 used (eBay)", "$1000 new (Thorlabs)"]
-    link: { label: Light sources, url: /resources/ }
+    link: { label: Light sources, url: /resources/light-sources/#affordable-hene-lasers }
   - item: Resonator mirrors
     need: required
     details: >-
@@ -62,10 +62,10 @@ supplies:
     need: highly-recommended
     details: >-
       This setup benefits from off-the-shelf hardware and a breadboard to experiment on. See [our
-      recommendations](/resources/) for items suited to a wide range of demos. If you own no such
+      recommendations](/resources/optomechanics/) for items suited to a wide range of demos. If you own no such
       components, a DIY breadboard and mounting hardware can work for much cheaper.
     cost: $500
-    link: { label: Recommendations, url: /resources/ }
+    link: { label: Recommendations, url: /resources/optomechanics/ }
   - item: Microscope objective
     need: recommended
     details: Enlarges the mode patterns coming from the cavity, which enhances the viewing experience.

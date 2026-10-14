@@ -67,4 +67,20 @@ const demos = defineCollection({
     }),
 });
 
-export const collections = { demos };
+// Resource pages (light sources, optomechanics, …): src/content/resources/<slug>/index.md.
+// Written with the same Markdown conventions as demo pages; the rubric page is separate.
+const resources = defineCollection({
+  loader: glob({
+    pattern: '*/index.md',
+    base: './src/content/resources',
+    generateId: ({ entry }) => entry.split('/')[0],
+  }),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string(),
+    order: z.number().default(100), // position on the Resources page, lowest first
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { demos, resources };

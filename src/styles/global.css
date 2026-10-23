@@ -791,8 +791,13 @@ a.cite {
 .mark {
   position: absolute;
   display: block;
+  appearance: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
   background: var(--ink);
   box-shadow: 0 0 0 2px #fff;
+  cursor: pointer;
 }
 .mark.is-active {
   background: var(--accent);
@@ -812,6 +817,14 @@ a.cite {
   white-space: nowrap;
   pointer-events: none;
   z-index: 6;
+}
+/* "1/2": this box overlaps others here; click again for the next one */
+.mark-tag-count {
+  margin-left: 8px;
+  padding-left: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+  font-family: var(--mono);
+  font-size: 12px;
 }
 
 /* Custom axis dropdowns (not native selects: the Y one is rotated) */

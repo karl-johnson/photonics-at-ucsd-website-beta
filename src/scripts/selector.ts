@@ -101,7 +101,9 @@ export function initSelector() {
       yTicks.append(el('span', 'tick', { bottom: `${ay.pos(t.v) + 1}px` }, t.label));
     }
 
-    for (const item of items) {
+    // Work out every box first, then draw the largest first so smaller boxes land on top: a box
+    // inside another stays visible. For identical boxes, the newer demo goes on top.
+    const boxes = items.map((item) => {
       const rx = item.ranges[state.x];
       const ry = item.ranges[state.y];
       const g = {
@@ -111,44 +113,94 @@ export function initSelector() {
         h: ay.pos(ry.hi) - ay.pos(ry.lo) + mark,
       };
       geometry.set(item.id, g);
+      return { item, g };
+    });
+    boxes.sort((a, b) => b.g.w * b.g.h - a.g.w * a.g.h || Date.parse(a.item.added) - Date.parse(b.item.added));
+    drawOrder = boxes.map((b) => b.item.id);
 
-      const a = el('a', 'mark', {
+    // Marks only preview a demo (hover, focus or click); the preview card is the link to its page.
+    for (const { item, g } of boxes) {
+      const b = el('button', 'mark', {
         left: `${g.left}px`,
         bottom: `${g.bottom}px`,
         width: `${g.w}px`,
         height: `${g.h}px`,
-      }) as HTMLAnchorElement;
-      a.href = item.href;
-      a.dataset.id = item.id;
-      a.setAttribute(
+      }) as HTMLButtonElement;
+      b.type = 'button';
+      b.dataset.id = item.id;
+      b.setAttribute(
         'aria-label',
         `${item.title} — ${labelOf(state.x)} ${valueOf(item, state.x)}, ${labelOf(state.y)} ${valueOf(item, state.y)}`,
       );
-
-      // Mouse: hovering previews, clicking opens. Touch/pen: the first tap previews, a second tap opens.
-      let tapWasActive = true;
-      a.addEventListener('pointerenter', (e) => {
-        if (e.pointerType === 'mouse') setActive(item.id);
+      // Keyboard focus selects the box. Focus from pressing the mouse is ignored: the click (on
+      // release) does the selecting, and re-selecting on press would hide the "1/2" count.
+      b.addEventListener('focus', () => {
+        if (b.matches(':focus-visible')) setActive(item.id);
       });
-      a.addEventListener('pointerdown', (e) => {
-        tapWasActive = e.pointerType === 'mouse' || state.active === item.id;
-      });
-      a.addEventListener('click', (e) => {
-        if (!tapWasActive) {
-          e.preventDefault();
-          setActive(item.id);
-        }
-        tapWasActive = true;
-      });
-      a.addEventListener('focus', () => setActive(item.id));
-      plot.append(a);
+      plot.append(b);
     }
 
     plot.append(el('span', 'guide guide--v'), el('span', 'guide guide--h'), el('span', 'mark-tag'));
     setActive(state.active);
   }
 
-  function setActive(id: string | null) {
+  // ───────── Overlapping boxes: click to cycle ─────────
+  // Clicking a point picks the top box there; clicking the same spot again moves down through
+  // every box under it. The tag shows "1/2", "2/2", … whenever boxes overlap at that point.
+
+  let drawOrder: string[] = []; // bottom to top
+
+  /** Pointer position inside the plot, in the same coordinates as `geometry` (from bottom-left) */
+  const pointIn = (e: MouseEvent) => {
+    const r = plot.getBoundingClientRect();
+    return { x: e.clientX - r.left - plot.clientLeft, y: r.bottom - plot.clientTop - e.clientY };
+  };
+
+  /** Ids of the boxes under a point, topmost first */
+  const stackAt = (p: { x: number; y: number }) =>
+    [...drawOrder].reverse().filter((id) => {
+      const g = geometry.get(id)!;
+      return p.x >= g.left && p.x <= g.left + g.w && p.y >= g.bottom && p.y <= g.bottom + g.h;
+    });
+
+  // Mouse hover. Tracked on the whole plot rather than per box: the selected box is raised to the
+  // front, so moving from where it's alone into an overlap never "enters" another box, and the
+  // count would never appear. Keep the selected box while it's under the pointer (just update the
+  // count); otherwise select the top box under the pointer.
+  let hoverKey = '';
+  plot.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    const stack = stackAt(pointIn(e));
+    if (!stack.length) return;
+    const id = state.active && stack.includes(state.active) ? state.active : stack[0];
+    const pos = stack.length > 1 ? { i: stack.indexOf(id), n: stack.length } : null;
+    const key = `${id}:${pos ? `${pos.i}/${pos.n}` : ''}`;
+    if (key === hoverKey) return; // nothing changed: don't redraw on every move
+    hoverKey = key;
+    setActive(id, pos);
+  });
+  plot.addEventListener('pointerleave', () => {
+    hoverKey = '';
+  });
+
+  let activeBeforeClick: string | null = null;
+  plot.addEventListener('pointerdown', () => {
+    activeBeforeClick = state.active; // before focus (or hover) changes it
+  });
+  plot.addEventListener('click', (e) => {
+    const markEl = (e.target as Element).closest<HTMLElement>('.mark');
+    if (!markEl) return;
+    if (e.detail === 0) return; // keyboard Enter/Space: focus has already selected it
+    const stack = stackAt(pointIn(e));
+    if (!stack.length) return;
+    const i = stack.indexOf(activeBeforeClick ?? '');
+    const next = i === -1 ? 0 : (i + 1) % stack.length;
+    const pos = stack.length > 1 ? { i: next, n: stack.length } : null;
+    hoverKey = `${stack[next]}:${pos ? `${pos.i}/${pos.n}` : ''}`; // so the next mouse move keeps this choice
+    setActive(stack[next], pos);
+  });
+
+  function setActive(id: string | null, stack: { i: number; n: number } | null = null) {
     state.active = id;
     plot.querySelectorAll<HTMLElement>('.mark').forEach((m) => m.classList.toggle('is-active', m.dataset.id === id));
 
@@ -165,6 +217,7 @@ export function initSelector() {
     Object.assign(gh.style, { left: '0px', bottom: `${g.bottom + g.h / 2}px`, width: `${g.left}px`, height: '1px' });
 
     tag.textContent = item.title;
+    if (stack) tag.append(el('span', 'mark-tag-count', {}, `${stack.i + 1}/${stack.n}`));
     const tw = tag.offsetWidth;
     const th = tag.offsetHeight;
     let tagBottom = g.bottom + g.h + 3;

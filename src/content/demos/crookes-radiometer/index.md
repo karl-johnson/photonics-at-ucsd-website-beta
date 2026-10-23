@@ -1,6 +1,7 @@
 ---
 title: Crookes Radiometer
 subtitle: Power mechanical motion using only light.
+blurb: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer blandit, leo vitae vehicula commodo, justo neque tristique est, nec condimentum magna ligula a massa. Phasellus pharetra sit amet libero et sollicitudin. Mauris fermentum leo convallis accumsan porttitor. Sed rutrum volutpat nisi, sed eleifend elit cursus at. Sed volutpat laoreet diam, quis facilisis sem vehicula eu. Quisque risus sapien, aliquet consequat turpis sit amet, pellentesque lobortis arcu. Aliquam velit leo, blandit vel turpis vitae, fringilla lobortis nisi. Sed nec porta dui. Suspendisse potenti. Sed mollis ex metus, vitae viverra mi rhoncus vel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed imperdiet, massa quis sagittis mattis, ante dui consequat felis, sed efficitur mauris dui in dolor.
 added: 2026-09-24 # TODO: real date
 
 diagram: ./diagram.svg
@@ -17,7 +18,7 @@ scores:
   alignmentDifficulty: 0
   portability: 5
   setupTime: [0, 1]
-  presentationComplexity: 0 # TODO (old "Demo complexity" score: [1, 6])
+  presentationComplexity: [1, 6]
   conceptComplexity: [5, 7]
   wow: [5, 7]
 

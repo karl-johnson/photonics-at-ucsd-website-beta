@@ -286,9 +286,42 @@ main.page {
   max-width: 580px;
   text-wrap: pretty;
 }
+/* Context paragraph under the subtitle: same size as body text */
+.demo-blurb {
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 640px;
+  text-wrap: pretty;
+}
 .demo-diagram {
   padding-top: 16px;
   scroll-margin-top: 24px;
+}
+
+/* Full-width red banner at the top of a page marked `stub: true` */
+.stub-banner {
+  background: var(--accent);
+  color: #fff;
+}
+.stub-banner .container {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 0;
+}
+.stub-banner-label {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border: 1px solid #fff;
+}
+.stub-banner p {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
 }
 .demo-diagram img,
 .demo-diagram svg {
@@ -2004,6 +2037,19 @@ a[data-footnote-ref]::after {
   }
   .demo-subtitle {
     font-size: 18px;
+  }
+  .demo-blurb {
+    font-size: 16px;
+  }
+  .stub-banner .container {
+    gap: 12px;
+    padding: 12px 0;
+  }
+  .stub-banner-label {
+    font-size: 12px;
+  }
+  .stub-banner p {
+    font-size: 15px;
   }
   .demo-diagram {
     padding-top: 8px;

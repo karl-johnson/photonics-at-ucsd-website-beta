@@ -5,6 +5,10 @@
 
 title: Your Demo Title
 subtitle: One sentence that makes someone want to see this demo.
+# Optional: a short paragraph of context for readers new to the phenomenon, shown under the subtitle.
+blurb: >-
+  A few sentences explaining the underlying effect in plain language.
+# stub: true   # unfinished page: shows a red "this page is a stub" banner at the top
 added: 2026-01-31 # YYYY-MM-DD, used for "most recent" sorting
 
 # Images live in this same folder. All of these are optional.

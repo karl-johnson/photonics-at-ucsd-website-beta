@@ -3,17 +3,17 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { PARAMETERS } from './data/parameters';
 
-// Each value is a single number (5) or a range ([7, 9]):
+// Each value is a single number (5) or a range ([7, 9]); [5] also means 5.
 // 0–10 for score parameters, any dollar amount for usd parameters (budget).
 function rangeOf(value: z.ZodNumber, what: string) {
   return z
-    .union([value, z.tuple([value, value])], {
+    .union([value, z.tuple([value]), z.tuple([value, value])], {
       error: (issue) =>
         issue.input === undefined
           ? `Missing: every parameter in src/data/rubric.yaml needs a score (${what})`
           : `Must be ${what}`,
     })
-    .transform((v) => (Array.isArray(v) ? { lo: v[0], hi: v[1] } : { lo: v, hi: v }))
+    .transform((v) => (Array.isArray(v) ? { lo: v[0], hi: v[v.length - 1] } : { lo: v, hi: v }))
     .refine((r) => r.lo <= r.hi, { message: 'A range must be written [low, high]' });
 }
 const scoreRange = rangeOf(z.number().int().min(0).max(10), 'a whole number 0–10, or a range like [3, 5]');
@@ -45,6 +45,10 @@ const demos = defineCollection({
     z.object({
       title: z.string(),
       subtitle: z.string(),
+      // A short paragraph of context for readers new to the phenomenon, shown under the subtitle.
+      blurb: z.string().optional(),
+      // An unfinished page: shows a "this page is a stub" banner at the top.
+      stub: z.boolean().default(false),
       added: z.coerce.date(),
       diagram: image().optional(),
       diagramAlt: z.string().optional(),

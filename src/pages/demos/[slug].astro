@@ -46,6 +46,16 @@ const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
 ---
 
 <Base title={d.title} description={d.subtitle} footerLink={{ label: '← All demos', href: '/' }}>
+  {
+    d.stub && (
+      <div class="stub-banner" role="note">
+        <div class="container">
+          <span class="stub-banner-label">Stub</span>
+          <p>This page is a stub, check back later for more details on this demo!</p>
+        </div>
+      </div>
+    )
+  }
   <section class="container demo-hero">
     <div class="demo-hero-main">
       <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -55,6 +65,7 @@ const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
       </nav>
       <h1 class="demo-title">{d.title}</h1>
       <p class="demo-subtitle">{d.subtitle}</p>
+      {d.blurb && <p class="demo-blurb">{d.blurb}</p>}
       {
         d.diagram && (
           <div class="demo-diagram" id="diagram">

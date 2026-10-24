@@ -12,9 +12,9 @@ blurb: >-
 added: 2026-01-31 # YYYY-MM-DD, used for "most recent" sorting
 
 # Images live in this same folder. All of these are optional.
-# diagram: ./diagram.svg        # shown full width at the top of the page. SVG (e.g. from Inkscape)
-#                               # is best: it's placed directly in the page, so its text uses the
-#                               # site's IBM Plex Sans. PNG/JPG also work.
+# diagram: ./diagram.svg        # shown full width at the top of the page. Save the Inkscape master
+#                               # here as diagram.source.svg and run `npm run diagrams` to make
+#                               # diagram.svg (see README "Diagrams"). PNG/JPG also work.
 # diagramAlt: Describe the diagram for screen readers.
 # thumbnail: ./thumb.jpg        # front page image (defaults to the first photo, then the diagram)
 # photos:                       # up to two are shown beside the diagram

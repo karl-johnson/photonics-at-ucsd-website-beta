@@ -171,6 +171,8 @@ export function initSelector() {
   plot.addEventListener('pointermove', (e) => {
     if (e.pointerType !== 'mouse') return;
     const stack = stackAt(pointIn(e));
+    // Clicking only does something where boxes overlap, so only show the "clickable" cursor there.
+    plot.classList.toggle('is-stacked', stack.length > 1);
     if (!stack.length) return;
     const id = state.active && stack.includes(state.active) ? state.active : stack[0];
     const pos = stack.length > 1 ? { i: stack.indexOf(id), n: stack.length } : null;
@@ -181,6 +183,7 @@ export function initSelector() {
   });
   plot.addEventListener('pointerleave', () => {
     hoverKey = '';
+    plot.classList.remove('is-stacked');
   });
 
   let activeBeforeClick: string | null = null;

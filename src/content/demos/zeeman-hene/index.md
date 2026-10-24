@@ -4,10 +4,13 @@ subtitle: Use magnetic fields to change the wavelength of light
 blurb: The Zeeman effect is quantum mechanical effect where electronic energy levels split slightly in the presence of a magnetic field. The slightness of this effect makes it usually very difficult to observe, but this demo/experiment uses the amazing properties of frequency beating (heterodyne detection) to make this effect visible with relatively modest equipment. 
 added: 2026-10-23
 stub: true
-# TODO: add diagram.svg to this folder, then uncomment these lines.
-# diagram: ./diagram.svg
-# diagramAlt: >-
-#   Diagram and visual explanation of the zeeman splitting demo. TODO
+diagram: ./diagram.svg
+diagramAlt: >-
+  Setup: an unpolarized HeNe tube between permanent magnets, followed by a polarizer and a photodiode
+  with a terminating resistor, connected to an oscilloscope or spectrum analyzer. Below, the optical
+  spectrum shows left- and right-circularly polarized modes separated by a splitting proportional to
+  the magnetic field (typically ~1 MHz); after the polarizer and photodetection, the electrical
+  spectrum shows a single line at that splitting frequency.
 photos:
   - { src: ./setup_rough.jpg, alt: The demo roughly put together on a big optical table in the lab.}
   - { src: ./trace_close.jpg, alt: A close-up of the beatnote signal measured by the oscilloscope.}
@@ -27,5 +30,4 @@ scores:
 
 ## Opportunities for improvement
 
-- Finish this documentation! There are nuances to this such as the beatnote intensity fading in and out as the modes drift in the laser resonator, etc.
-- Use an electromagnet instead of permanent magnets, so the amount of Zeeman splitting can be varied! This would also make the demo more compelling, as you can show the difference of the behavior between having a magnetic field and having no magnetic field
+- Use an electromagnet instead of permanent magnets, so the amount of Zeeman splitting can be varied! This makes the demo substantially more compelling.

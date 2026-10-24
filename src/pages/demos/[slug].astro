@@ -7,14 +7,6 @@ import DocBody from '../../components/DocBody.astro';
 import { PARAMETERS } from '../../data/parameters';
 import { formatValue, type Range } from '../../lib/scores';
 import { withBase } from '../../lib/url';
-import { prepareInlineSvg } from '../../lib/svg';
-
-// Raw text of every SVG in the demo folders, so SVG diagrams can be inlined (see src/lib/svg.ts).
-const rawSvgs = import.meta.glob<string>('/src/content/demos/*/*.svg', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-});
 
 export async function getStaticPaths() {
   const demos = await getCollection('demos', (d) => !d.data.draft);
@@ -30,17 +22,6 @@ const scoreRows = PARAMETERS.map((p) => {
   return { label: p.name, value: formatValue(p.unit, range), range: p.unit === 'usd' ? null : range };
 });
 
-// An SVG diagram is inlined; find its file among this demo's SVGs by name. The processed image
-// URL keeps the file name (dev: /@fs/…/setup.svg?…, build: /_astro/setup.<hash>.svg).
-let diagramSvg: string | null = null;
-if (d.diagram?.format === 'svg') {
-  const match = Object.entries(rawSvgs).find(([path]) => {
-    const [folder, file] = path.split('/').slice(-2);
-    return folder === demo.id && d.diagram!.src.includes('/' + file.replace(/\.svg$/, '') + '.');
-  });
-  if (match) diagramSvg = prepareInlineSvg(match[1], d.diagramAlt ?? '');
-}
-
 // Two photo slots beside the diagram; empty slots show a placeholder until photos are added.
 const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
 ---
@@ -51,7 +32,7 @@ const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
       <div class="stub-banner" role="note">
         <div class="container">
           <span class="stub-banner-label">Stub</span>
-          <p>This page is a stub, check back later for more details on this demo!</p>
+          <p>This page is a stub. It will be expanded to a full guide in the future!</p>
         </div>
       </div>
     )
@@ -69,8 +50,9 @@ const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
       {
         d.diagram && (
           <div class="demo-diagram" id="diagram">
-            {diagramSvg ? (
-              <Fragment set:html={diagramSvg} />
+            {d.diagram.format === 'svg' ? (
+              // SVG diagrams (made by `npm run diagrams`, text already turned into paths) are used as-is.
+              <img src={d.diagram.src} width={d.diagram.width} height={d.diagram.height} alt={d.diagramAlt ?? ''} />
             ) : (
               <Image src={d.diagram} alt={d.diagramAlt ?? ''} widths={[648, 1296]} sizes="648px" loading="eager" />
             )}
@@ -111,3 +93,41 @@ const photoSlots = [0, 1].map((i) => d.photos[i] ?? null);
     <Content />
   </DocBody>
 </Base>
+
+<script>
+  // Show an image's alt text next to the pointer as soon as it's over the diagram or a photo
+  // (a `title` tooltip only appears after a delay). Mouse only; hidden from screen readers, which
+  // read the alt attribute itself.
+  const tip = document.createElement('div');
+  tip.className = 'alt-tip';
+  tip.setAttribute('aria-hidden', 'true');
+  tip.hidden = true;
+  document.body.append(tip);
+
+  const place = (e: PointerEvent) => {
+    const gap = 16;
+    const { offsetWidth: w, offsetHeight: h } = tip;
+    // Below-right of the pointer, flipped to the other side near the window's edges.
+    let x = e.clientX + gap;
+    let y = e.clientY + gap;
+    if (x + w > innerWidth - 8) x = Math.max(8, e.clientX - gap - w);
+    if (y + h > innerHeight - 8) y = Math.max(8, e.clientY - gap - h);
+    tip.style.transform = `translate(${x}px, ${y}px)`;
+  };
+
+  document.querySelectorAll<HTMLImageElement>('.demo-diagram img, .photo img').forEach((img) => {
+    if (!img.alt.trim()) return;
+    img.addEventListener('pointerenter', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      tip.textContent = img.alt;
+      tip.hidden = false;
+      place(e);
+    });
+    img.addEventListener('pointermove', (e) => {
+      if (!tip.hidden) place(e);
+    });
+    img.addEventListener('pointerleave', () => {
+      tip.hidden = true;
+    });
+  });
+</script>

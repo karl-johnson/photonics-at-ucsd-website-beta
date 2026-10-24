@@ -298,6 +298,25 @@ main.page {
   scroll-margin-top: 24px;
 }
 
+/* Demo images' alt text, shown next to the pointer with no delay (script in demos/[slug].astro) */
+.alt-tip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  max-width: 360px;
+  padding: 8px 12px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.45;
+  text-wrap: pretty;
+  pointer-events: none;
+}
+.alt-tip[hidden] {
+  display: none;
+}
+
 /* Full-width red banner at the top of a page marked `stub: true` */
 .stub-banner {
   background: var(--accent);
@@ -323,8 +342,7 @@ main.page {
   font-weight: 500;
   line-height: 1.5;
 }
-.demo-diagram img,
-.demo-diagram svg {
+.demo-diagram img {
   display: block;
   width: 100%;
   height: auto;
@@ -797,6 +815,12 @@ a.cite {
   border-radius: 0;
   background: var(--ink);
   box-shadow: 0 0 0 2px #fff;
+  cursor: default;
+  /* Semi-transparent, so overlaps show as darker areas: you can see where a click will cycle */
+  opacity: 0.7;
+}
+/* Pointer cursor only where boxes overlap, i.e. where a click cycles (set in src/scripts/selector.ts) */
+.plot.is-stacked .mark {
   cursor: pointer;
 }
 .mark.is-active {

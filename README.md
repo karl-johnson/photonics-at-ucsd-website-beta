@@ -9,8 +9,10 @@ Each demo is one folder in `src/content/demos/`:
 ```
 src/content/demos/
   fabry-perot-mode-filter/
-    index.md      ← all of the demo's text, scores and supplies
-    diagram.svg   ← images used by index.md
+    index.md             ← all of the demo's text, scores and supplies
+    diagram.source.svg   ← editable diagram master (Inkscape)
+    diagram.svg          ← web version, generated from the master by `npm run diagrams`
+    *.jpg                ← photos used by index.md
 ```
 
 To add a demo:
@@ -26,6 +28,29 @@ The home page's plot and list update automatically.
 This part holds the structured info: title, subtitle, date added, images, the supplies list, and `scores:`, with one entry per rubric parameter. Scores can be a single number (`5`) or a range (`[7, 9]`): 0–10, except budget, which is in dollars.
 
 If something is wrong, such as a score of 12, a misspelled `need`, a missing image, or a missing or unknown parameter under `scores:`, the build stops. The error names the file and the field, for example `scores.wow: Too big: expected number to be <=10`.
+
+## Diagrams
+
+Diagrams are drawn in Inkscape. The editable master and a web version both live in the demo's folder and are both committed to git:
+
+- **Master:** `diagram.source.svg`, the file you edit. Any `<name>.source.svg` works the same way and becomes `<name>.svg`, so a page can have more than one diagram.
+- **Web version:** `diagram.svg`, generated from the master and shown on the page. Don't edit it by hand.
+
+After adding or changing a master, run:
+
+```bash
+npm run diagrams
+```
+
+This uses Inkscape (it needs to be installed, along with the fonts the diagram uses, such as IBM Plex Sans) to make the web version:
+
+- objects lying completely outside the page are deleted (anything partly outside is cropped at the page edge, as usual)
+- text is converted to paths, so the diagram looks the same everywhere without needing fonts
+- unused definitions are removed and the file is saved as plain SVG
+
+It only converts masters that changed (`npm run diagrams -- --force` converts all of them), and finds Inkscape on the PATH or in the usual install folders. Set the `INKSCAPE` environment variable to its full path if it's somewhere else.
+
+Each web version records a fingerprint of its master. If you forget to run the command, `npm run dev` and `npm run build` print a warning naming the master that changed, and the site uses the old web version until you run it. `npm run diagrams -- --check` lists out-of-date diagrams without converting anything.
 
 ## Changing the scoring parameters
 
@@ -72,6 +97,7 @@ npm install
 npm run dev       # http://localhost:4321/photonics-at-ucsd-website-beta/
 npm run build     # outputs to dist/
 npm run preview   # serve the built site
+npm run diagrams  # convert changed diagram masters (see "Diagrams" above)
 ```
 
 If you change the Markdown plugins in `src/plugins/`, stop the dev server and delete `.astro/` and `node_modules/.astro/` first. Astro caches rendered Markdown, so without this you will keep seeing the old output.
@@ -85,7 +111,8 @@ If you change the Markdown plugins in `src/plugins/`, stop the dev server and de
 | `src/data/parameters.ts`, `src/lib/scores.ts` | Load and check `rubric.yaml`; format scores and meters |
 | `src/pages/resources/rubric.astro` | Scoring rubric page |
 | `src/plugins/remark-demo.mjs`, `rehype-demo.mjs` | Turn the Markdown conventions above into the page layout |
-| `src/lib/svg.ts` | Prepares SVG diagrams for placing directly in the page (cleans Inkscape metadata, fixes wrapped-text positions for Chrome) |
+| `scripts/diagrams.mjs`, `scripts/diagram-status.mjs` | `npm run diagrams`: converts diagram masters with Inkscape; fingerprint helpers |
+| `src/integrations/diagram-check.mjs` | Warns on dev/build when a diagram master changed since it was converted |
 | `src/pages/index.astro`, `src/scripts/selector.ts` | Demo Selector (plot, preview, sortable list) |
 | `src/pages/demos/[slug].astro` | Demo page template |
 | `src/pages/resources/[slug].astro`, `src/pages/resources/index.astro` | Resource page template and the Resources page |

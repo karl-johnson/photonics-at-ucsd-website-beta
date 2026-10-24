@@ -11,6 +11,10 @@ diagramAlt: >-
   through a polarizer. Below, the patterns on the screen: a smooth round spot for single-mode fiber,
   a two-lobed pattern for few-mode fiber, and a grainy speckle pattern for multi-mode fiber.
 
+photos:
+  - { src: ./few-mode.jpg, alt: The assembled demo on a small breadboard showing a two-lobed pattern from a few-mode (SMF-28) fiber}
+  - { src: ./multi-mode.jpg, alt: The assembled demo on a small breadboard showing a complex multimode pattern from a 50 um core diameter fiber}
+
 # Scores: see /resources/rubric/ for what each number means.
 scores:
   budget: [50, 100]

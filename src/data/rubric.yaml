@@ -46,8 +46,8 @@ parameters:
     levels:
       0: Purchased off-the-shelf in an already fully assembled state.
       2: "Like a lego set: don't have to make anything but do have to put pieces together."
-      3: First level where you have to make anything. 3D printed or laser cut parts where you can in principle just run the machine, and use as-is or assemble like legos.
-      4: "Basic assembly of things on an optical breadboard (screwing stuff together). See also: assembling IKEA furniture."
+      3: "Basic assembly of things on an optical breadboard (screwing stuff together). See also: assembling IKEA furniture."
+      4: First level where you have to make anything. 3D printed or laser cut parts where you can in principle just run the machine, and use as-is or assemble like legos.
       5: 3D printed parts require post-processing, such as heat-set inserts, press-fit magnets, or gluing them together.
       6: "Making parts requires some level of skill/adeptness, i.e. you can't just rely on an automated tool to do everything. Tapping holes or even having to carefully cut something with scissors could go here." 
       8: Making parts requires multi-operation machining with cross-operation tolerances that matter

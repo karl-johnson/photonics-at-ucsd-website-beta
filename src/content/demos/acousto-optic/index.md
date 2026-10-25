@@ -1,7 +1,8 @@
 ---
 title: Acousto-optic Modulator
 subtitle: Watch beams of light diffract off sound waves
-blurb: Acousto-optic modulators are an important building block in advanced optical systems, providing several useful capabilities such as high speed switching, intensity modulation, beam deflection, and frequency modulation. These modulators operate on a very interesting principle: a high power, (usually) sinusoidal electrical signal is delivered to the modulator, generating pressure waves in a crystal which light may diffract off of. This setup is a simple demonstration of an AOM, where a single laser beam enters the AOM but an additional diffracted beam can be seen exiting it. Audiences can see the impact on the position and brightness of the diffracted beam when the power and frequency of the RF waveform is adjusted.
+blurb: >-
+  Acousto-optic modulators are an important building block in advanced optical systems, providing several useful capabilities such as high speed switching, intensity modulation, beam deflection, and frequency modulation. These modulators operate on a very interesting principle: a high power, (usually) sinusoidal electrical signal is delivered to the modulator, generating pressure waves in a crystal which light may diffract off of. This setup is a simple demonstration of an AOM, where a single laser beam enters the AOM but an additional diffracted beam can be seen exiting it. Audiences can see the impact on the position and brightness of the diffracted beam when the power and frequency of the RF waveform is adjusted.
 added: 2026-10-25
 stub: true
 diagram: ./diagram.svg

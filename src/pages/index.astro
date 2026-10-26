@@ -44,9 +44,12 @@ const cellValue = (item: Item, p: (typeof PARAMETERS)[number], compact = false) 
 
 const featured = items[0];
 
-// Background section below the plot; its text is Markdown in src/content/pages/home.md.
+// Introduction above the plot, from src/content/pages/home.md: the title ("Looking for") with
+// phrases from `nouns` taking turns after it, next to the Markdown description.
 const homeIntro = await getEntry('pages', 'home');
 const HomeIntro = homeIntro ? (await render(homeIntro)).Content : null;
+const heroTitle = homeIntro?.data.title ?? 'Demo Selector';
+const heroNouns = homeIntro?.data.nouns ?? [];
 // Default plot axes. If a key here is ever removed from rubric.yaml, fall back to the first parameters.
 const axisOrFallback = (key: string, i: number) => (PARAMETERS.some((p) => p.key === key) ? key : PARAMETERS[i].key);
 const defaultX = axisOrFallback('budget', 0);
@@ -58,7 +61,29 @@ const chevronUp = 'M2 8l4-4 4 4';
 
 <Base>
   <div class="container">
-    <h1 class="home-title">Demo Selector</h1>
+    <section class="home-hero">
+      <h1 class="home-hero-title">
+        <span class="home-hero-lead">{heroTitle}</span>
+        {
+          heroNouns.length > 0 && (
+            <>
+              {/* Screen readers get the whole sentence once, not a changing word */}
+              <span class="visually-hidden">{heroNouns.join(', ')}</span>
+              <span class="rotator" aria-hidden="true">
+                {heroNouns.map((n, i) => (
+                  <span class:list={['rotator-item', { 'is-current': i === 0 }]}>{n}</span>
+                ))}
+              </span>
+            </>
+          )
+        }
+      </h1>
+      {HomeIntro && (
+        <div class="doc home-hero-text">
+          <HomeIntro />
+        </div>
+      )}
+    </section>
 
     <section class="explorer" aria-label="Demo explorer">
       <div class="plot-col">
@@ -143,21 +168,6 @@ const chevronUp = 'M2 8l4-4 4 4';
       }
     </section>
 
-    {
-      homeIntro && (
-        <section class="home-intro" aria-labelledby="home-intro-title">
-          <div class="all-demos-head">
-            <div>
-              <h2 id="home-intro-title">{homeIntro.data.title}</h2>
-            </div>
-          </div>
-          <div class="doc home-intro-body">
-            <HomeIntro />
-          </div>
-        </section>
-      )
-    }
-
     <section class="all-demos" id="all" aria-labelledby="all-demos-title">
       <div class="all-demos-head">
         <div>
@@ -230,5 +240,8 @@ const chevronUp = 'M2 8l4-4 4 4';
 
 <script>
   import { initSelector } from '../scripts/selector';
+  import { initRotator } from '../scripts/rotator';
   initSelector();
+  const rotator = document.querySelector<HTMLElement>('.rotator');
+  if (rotator) initRotator(rotator);
 </script>

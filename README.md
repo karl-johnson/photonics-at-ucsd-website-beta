@@ -83,7 +83,7 @@ Keep source clips short (under ~15 s) and reasonably small. They're committed to
 
 ## Changing the scoring parameters
 
-The parameters, and the rubric text explaining them, live in one file: `src/data/rubric.yaml`. The [scoring rubric page](https://karl-johnson.github.io/photonics-at-ucsd-website-beta/resources/rubric/), the scores on every demo page, the front page plot, preview panel and list columns, and the checks on each demo's `scores:` are all built from it. Nothing else lists the parameters.
+The parameters, and the rubric text explaining them, live in one file: `src/data/rubric.yaml`. The [scoring rubric page](https://photonics-at-ucsd.github.io/photonics-at-ucsd-website-beta/resources/rubric/), the scores on every demo page, the front page plot, preview panel and list columns, and the checks on each demo's `scores:` are all built from it. Nothing else lists the parameters.
 
 - **Edit wording, descriptions or level text:** just edit the YAML.
 - **Reorder:** move the entries. Every page follows the new order.
@@ -124,7 +124,7 @@ Resource pages (Light Sources, Optomechanics, …) live in `src/content/resource
 Some page text is Markdown in `src/content/pages/`, using the same conventions as demo pages:
 
 - `about.md`: the About page. `title` and `subtitle` (shown under the title) go at the top; the text before the first `##` is the intro, and each `##` starts a numbered section.
-- `home.md`: the "About these demos" section on the front page, between the plot and the list. Its `title` is the section heading.
+- `home.md`: the introduction at the top of the front page, above the plot. `title` is the fixed start of the heading ("Looking for"), and the phrases under `nouns` take turns after it in red, each sliding in from above. The Markdown text is the description beside the heading (below it on narrower screens). Keep phrases short: the longest should fit on one line on a phone (about 25 characters).
 
 ## Development
 

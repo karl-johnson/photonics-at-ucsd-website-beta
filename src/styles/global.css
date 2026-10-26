@@ -734,14 +734,61 @@ a.cite {
 
 /* ───────── Front page ───────── */
 
-.home-title {
+/* Introduction above the plot (src/content/pages/home.md): animated title + description */
+.home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
+  padding: 48px 0 56px;
+}
+.home-hero-title {
   margin: 0;
-  padding: 36px 0 28px;
-  text-align: center;
-  font-size: 56px;
-  line-height: 1;
+  font-size: 52px;
+  line-height: 1.08;
   font-weight: 600;
   letter-spacing: -0.025em;
+}
+.home-hero-lead {
+  display: block;
+}
+/* The rotating phrase: the current one is in place; the others wait above it, invisible, and
+   the one leaving slides down as it fades (src/scripts/rotator.ts swaps the classes) */
+.rotator {
+  display: block;
+  position: relative;
+  color: var(--accent);
+}
+.rotator-item {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(-0.45em);
+  transition:
+    opacity 450ms ease,
+    transform 450ms ease;
+}
+.rotator-item.is-current {
+  position: relative;
+  opacity: 1;
+  transform: none;
+}
+.rotator-item.is-leaving {
+  opacity: 0;
+  transform: translateY(0.45em);
+}
+@media (prefers-reduced-motion: reduce) {
+  .rotator-item {
+    transition: none;
+  }
+}
+.home-hero-text {
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ink-2);
 }
 
 .explorer {
@@ -1034,16 +1081,6 @@ a.cite {
 }
 
 /* Background section below the plot (text from src/content/pages/home.md) */
-.home-intro {
-  padding-top: 112px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-.home-intro-body {
-  max-width: 780px;
-}
-
 /* All demos list */
 .all-demos {
   padding-top: 112px;
@@ -1825,7 +1862,18 @@ a[data-footnote-ref]::after {
     font-size: 16px;
   }
 
-  /* Front page */
+  /* Front page: description below the animated title */
+  .home-hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+  .home-hero-title {
+    font-size: 44px;
+  }
+  .home-hero-text {
+    max-width: 680px;
+  }
   .preview-attrs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1957,9 +2005,16 @@ a[data-footnote-ref]::after {
   }
 
   /* Front page: X/Y buttons above a full-width square plot */
-  .home-title {
-    font-size: 36px;
-    padding: 24px 0 20px;
+  .home-hero {
+    gap: 16px;
+    padding: 24px 0 32px;
+  }
+  .home-hero-title {
+    font-size: 30px; /* keeps even the longest phrase on one line on a typical phone */
+  }
+  .home-hero-text {
+    font-size: 16px;
+    line-height: 1.6;
   }
   .plot-col {
     justify-self: stretch;
@@ -2075,8 +2130,7 @@ a[data-footnote-ref]::after {
     font-size: 14px;
     color: var(--accent);
   }
-  .all-demos,
-  .home-intro {
+  .all-demos {
     padding-top: 56px;
     gap: 16px;
   }

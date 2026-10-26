@@ -100,12 +100,14 @@ const resources = defineCollection({
 });
 
 // One-off pages written in Markdown: src/content/pages/<name>.md
-//   about.md → the About page          home.md → the background section on the front page
+//   about.md → the About page          home.md → the introduction at the top of the front page
 const pages = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/pages' }),
   schema: z.object({
     title: z.string(),
     subtitle: z.string().optional(),
+    // home.md: phrases that take turns after the title ("Looking for … a weekend project?")
+    nouns: z.array(z.string()).optional(),
   }),
 });
 

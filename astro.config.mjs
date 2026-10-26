@@ -7,7 +7,7 @@ import assetCheck from './src/integrations/asset-check.mjs';
 
 // GitHub Pages project site: https://<user>.github.io/<repo>/
 // If the site moves to a custom domain, set `site` to it and `base` to '/'.
-const site = 'https://karl-johnson.github.io';
+const site = 'https://photonics-at-ucsd.github.io';
 const base = '/photonics-at-ucsd-website-beta';
 
 export default defineConfig({

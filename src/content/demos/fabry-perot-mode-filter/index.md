@@ -1,7 +1,8 @@
 ---
 title: Fabry–Perot Mode Filter
 subtitle: Watch the light exiting an optical resonator rapidly cycle through a variety of intricate mode patterns.
-blurb: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer blandit, leo vitae vehicula commodo, justo neque tristique est, nec condimentum magna ligula a massa. Phasellus pharetra sit amet libero et sollicitudin. Mauris fermentum leo convallis accumsan porttitor. Sed rutrum volutpat nisi, sed eleifend elit cursus at. Sed volutpat laoreet diam, quis facilisis sem vehicula eu. Quisque risus sapien, aliquet consequat turpis sit amet, pellentesque lobortis arcu. Aliquam velit leo, blandit vel turpis vitae, fringilla lobortis nisi. Sed nec porta dui. Suspendisse potenti. Sed mollis ex metus, vitae viverra mi rhoncus vel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed imperdiet, massa quis sagittis mattis, ante dui consequat felis, sed efficitur mauris dui in dolor.
+blurb: >-
+  Fabry perot resonators have several very unique properties, owing to their ability to store light internally as it bounces around hundreds or thousands of times. This demo explores one of the less well-known capabilities of free space resonators: their ability to *spatially* filter light to a specific modal pattern. As this spatial filtering is highly wavelength-dependent, pairing a Fabry perot cavity with an unstabilized Helium Neon laser yields rapidly varying intensity patterns on a viewing screen that will captivate attendees and *really* confuse a fair number of optically-inclined viewers.
 added: 2026-09-23 # TODO: real date
 
 diagram: ./diagram.svg

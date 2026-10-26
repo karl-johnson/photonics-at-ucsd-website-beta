@@ -25,7 +25,9 @@ The home page's plot and list update automatically.
 
 ### The top of the file (between the `---` lines)
 
-This part holds the structured info: title, subtitle, date added, images, the supplies list, and `scores:`, with one entry per rubric parameter. Scores can be a single number (`5`) or a range (`[7, 9]`): 0–10, except budget, which is in dollars.
+This part holds the structured info: title, subtitle, an optional `blurb` (a short paragraph of context shown under the subtitle), date added, images, the supplies list, and `scores:`, with one entry per rubric parameter. Scores can be a single number (`5`) or a range (`[7, 9]`): 0–10, except budget, which is in dollars.
+
+Text up here isn't run through the Markdown converter, with two exceptions: `blurb` and each supply's `details` support *italics*, **bold** and [links](…). Write long text like the blurb as a `>-` block (see the template), so colons in it can't break the file.
 
 If something is wrong, such as a score of 12, a misspelled `need`, a missing image, or a missing or unknown parameter under `scores:`, the build stops. The error names the file and the field, for example `scores.wow: Too big: expected number to be <=10`.
 

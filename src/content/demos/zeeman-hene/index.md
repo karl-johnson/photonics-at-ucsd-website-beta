@@ -16,7 +16,7 @@ photos:
   - { src: ./trace_close.jpg, alt: A close-up of the beatnote signal measured by the oscilloscope.}
 # Scores: see /resources/rubric/ for what each number means.
 scores:
-  budget: [300,1500]
+  budget: [300,1000]
   tools: [2,3]
   manufacturingDifficulty: [4]
   alignmentDifficulty: [1,3]
@@ -30,4 +30,4 @@ scores:
 
 ## Opportunities for improvement
 
-- Interfere the transmitted beam with the diffracted beam on a photodetector: a beatnote will appear at the drive frequency of the AOM due to the frequency shift the AOM applies to the diffracted beam 
+- Use an electromagnet instead of permanent magnets, so the amount of Zeeman splitting can be varied! This makes the demo substantially more compelling.

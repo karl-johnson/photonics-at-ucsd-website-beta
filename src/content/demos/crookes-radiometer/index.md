@@ -1,7 +1,8 @@
 ---
 title: Crookes Radiometer
 subtitle: Power mechanical motion using only light.
-blurb: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer blandit, leo vitae vehicula commodo, justo neque tristique est, nec condimentum magna ligula a massa. Phasellus pharetra sit amet libero et sollicitudin. Mauris fermentum leo convallis accumsan porttitor. Sed rutrum volutpat nisi, sed eleifend elit cursus at. Sed volutpat laoreet diam, quis facilisis sem vehicula eu. Quisque risus sapien, aliquet consequat turpis sit amet, pellentesque lobortis arcu. Aliquam velit leo, blandit vel turpis vitae, fringilla lobortis nisi. Sed nec porta dui. Suspendisse potenti. Sed mollis ex metus, vitae viverra mi rhoncus vel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed imperdiet, massa quis sagittis mattis, ante dui consequat felis, sed efficitur mauris dui in dolor.
+blurb: >-
+  The ability for light to deliver energy is often intuitive: it is easy to imagine the sun heating up the earth (thermal energy) or generating electricity in a solar panel (electrical energy). However, it is much common to see the energy of light directly converted into mechanical energy. The Crookes radiometer allows us to (seemingly) see exactly this: a device whose spinning motion is powered entirely by exposure to light.
 added: 2026-09-24 # TODO: real date
 
 diagram: ./diagram.svg

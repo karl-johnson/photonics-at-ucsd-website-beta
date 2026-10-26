@@ -27,4 +27,4 @@ scores:
 
 ## Opportunities for improvement
 
-- Use an electromagnet instead of permanent magnets, so the amount of Zeeman splitting can be varied! This makes the demo substantially more compelling.
+- Interfere the transmitted beam with the diffracted beam on a photodetector: a beatnote will appear at the drive frequency of the AOM due to the frequency shift the AOM applies to the diffracted beam.

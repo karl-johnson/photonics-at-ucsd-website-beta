@@ -12,8 +12,7 @@ import { h } from 'hastscript';
 import { toString } from 'hast-util-to-string';
 import { visit } from 'unist-util-visit';
 import GithubSlugger from 'github-slugger';
-import { fromMarkdown } from 'mdast-util-from-markdown';
-import { toHast } from 'mdast-util-to-hast';
+import { inlineMarkdown } from '../lib/inline-markdown.mjs';
 
 const NEED_LABELS = {
   required: 'Required',
@@ -27,26 +26,6 @@ const NEED_LABELS = {
 
 const isElement = (node, tag) => node?.type === 'element' && (!tag || node.tagName === tag);
 const isBlank = (node) => node.type === 'text' && !node.value.trim();
-
-/** Curly quotes, like SmartyPants does for the Markdown body */
-function smartQuotes(s) {
-  return s
-    .replace(/(^|[\s(\[{—–-])"/g, '$1“')
-    .replace(/"/g, '”')
-    .replace(/(^|[\s(\[{—–-])'/g, '$1‘')
-    .replace(/'/g, '’');
-}
-
-/** Inline Markdown (links, emphasis) from a frontmatter string → hast children */
-function inlineMarkdown(text) {
-  const hast = toHast(fromMarkdown(text ?? ''));
-  visit(hast, 'text', (node) => {
-    node.value = smartQuotes(node.value);
-  });
-  const blocks = (hast.children ?? []).filter((n) => !isBlank(n));
-  if (blocks.length === 1 && isElement(blocks[0], 'p')) return blocks[0].children;
-  return blocks;
-}
 
 function suppliesTable(supplies) {
   const head = h('thead', [

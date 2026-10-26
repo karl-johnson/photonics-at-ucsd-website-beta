@@ -1,7 +1,7 @@
 ---
 title: Fiber Modes
 subtitle: See the output intensity patterns of single- and multi-mode fiber, and manipulate them using fiber paddles.
-blurb: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer blandit, leo vitae vehicula commodo, justo neque tristique est, nec condimentum magna ligula a massa. Phasellus pharetra sit amet libero et sollicitudin. Mauris fermentum leo convallis accumsan porttitor. Sed rutrum volutpat nisi, sed eleifend elit cursus at. Sed volutpat laoreet diam, quis facilisis sem vehicula eu. Quisque risus sapien, aliquet consequat turpis sit amet, pellentesque lobortis arcu. Aliquam velit leo, blandit vel turpis vitae, fringilla lobortis nisi. Sed nec porta dui. Suspendisse potenti. Sed mollis ex metus, vitae viverra mi rhoncus vel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed imperdiet, massa quis sagittis mattis, ante dui consequat felis, sed efficitur mauris dui in dolor.
+blurb: Nearly all of the information bouncing around our modern interconnected world spends at least part of its journey as light in an optical fiber. However, there are many types of optical fiber, each with their own set of properties and use case. In this demo, we show one parameter which can vary between fibers - the number of supported modes - and how that difference manifests in the pattern of light exiting the fiber.
 added: 2026-09-24 # 
 
 diagram: ./diagram.svg
@@ -93,15 +93,18 @@ Let attendees play with the paddles or move un-taped SMF-28 fiber and observe th
 - Switching to 50 µm fiber will produce more complex intensity patterns.
 - Switching to single-mode fiber will produce an intensity pattern that does not vary spatially as the paddles are moved — only its intensity as viewed through a polarizer changes. Polarization control in SMF is the most typical use case of polarization paddles.
 
+- TODO add more explanation of: impact of refractive index, clearly talk about fiber diameter, say explicitly that there is the tradeoff between the "niceness" of single mode fiber and the difficulty of coupling light into it 
+
 ### Concepts, from simple to complex
 
 - How fiber works ([LINK TO OTHER DEMOS THAT HELP DO THIS BETTER])
 - What the different modes in a fiber mean
   - Analogy 1: angles of light undergoing TIR
   - Analogy 2 (for modes in general): a guitar string
+
 - Impact of modes on fiber applications
   - Communications: modal dispersion (light from each mode arrives at the receiver at different times, like echoes)
-  - Focusing light from a fiber: single-mode fiber light can be collimated like a laser pointer, while multi-mode light becomes progressively harder to collimate (diverges more) as the number of modes increases
+- Focusing light from a fiber: single-mode fiber light can be collimated like a laser pointer, while multi-mode light becomes progressively harder to collimate (diverges more) as the number of modes increases
 - What the paddles are actually doing
   - Why polarization is affected: strain on the fiber induces birefringence, which delays the polarization components relative to each other
   - Why modes are affected: bending changes the refractive index and geometry of the fiber, which delays each mode differently (explain either through their different modal profiles or their different angular distributions)
@@ -132,3 +135,4 @@ Print out a diagram of Hermite–Gaussian or Laguerre–Gaussian modes. Attendee
 
 - Polarization paddles are one of the most comically overpriced optics supplies I've ever seen. You should be able to 3D print them for cheap: [fiber polarization controller on Printables](https://www.printables.com/model/268294-fiber-polarization-controller).
 - Find a cheaper source of single-mode visible fiber. It is a bit niche, but it's wild that it's so much more expensive.
+- We should make a new demo that actually explains how optical fiber works at a more basic level! For example, one showing total internal reflection inside a large glass rod or stream of water.

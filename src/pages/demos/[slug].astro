@@ -6,6 +6,7 @@ import Meter from '../../components/Meter.astro';
 import DocBody from '../../components/DocBody.astro';
 import LoopVideo from '../../components/LoopVideo.astro';
 import { resolveClip } from '../../lib/media';
+import { inlineMarkdownHtml } from '../../lib/inline-markdown.mjs';
 import { PARAMETERS } from '../../data/parameters';
 import { formatValue, type Range } from '../../lib/scores';
 import { withBase } from '../../lib/url';
@@ -59,7 +60,7 @@ const photos = await Promise.all(
       </nav>
       <h1 class="demo-title">{d.title}</h1>
       <p class="demo-subtitle">{d.subtitle}</p>
-      {d.blurb && <p class="demo-blurb">{d.blurb}</p>}
+      {d.blurb && <p class="demo-blurb" set:html={inlineMarkdownHtml(d.blurb, import.meta.env.BASE_URL)} />}
       {
         d.diagram && (
           <div class="demo-diagram" id="diagram">

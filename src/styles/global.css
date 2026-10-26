@@ -388,12 +388,40 @@ main.page {
   overflow: hidden;
   margin: 0;
 }
-.photo img {
+.photo img,
+.photo video {
   position: absolute;
   inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Pause/play button on looping video clips (src/components/LoopVideo.astro) */
+.video-toggle {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: rgba(26, 26, 24, 0.75);
+  color: #fff;
+  cursor: pointer;
+}
+.video-toggle:hover {
+  background: var(--ink);
+}
+.video-toggle[data-state='playing'] .icon-play,
+.video-toggle[data-state='paused'] .icon-pause {
+  display: none;
 }
 .placeholder {
   background: var(--placeholder);
@@ -955,7 +983,9 @@ a.cite {
   background: var(--ink);
   overflow: hidden;
 }
-.preview-media img {
+.preview-media img,
+.preview-media video {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;

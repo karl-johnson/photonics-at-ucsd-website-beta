@@ -1,6 +1,7 @@
 // Front page interactivity: scatter plot, axis dropdowns, hover/tap preview, sortable list.
 // The parameters (from src/data/rubric.yaml) arrive with the demo data, so nothing here is hard-coded.
 import { formatValue, segments, type Range, type Unit } from '../lib/scores';
+import { setupLoopVideo } from './loop-video';
 
 interface ParameterInfo {
   key: string;
@@ -17,6 +18,8 @@ interface Item {
   added: string;
   img: string | null;
   thumb: string | null;
+  /** A looping clip to play in the preview (`img` is its poster), or null */
+  video: string | null;
   isDiagram: boolean;
   ranges: Record<string, Range>;
 }
@@ -243,8 +246,18 @@ export function initSelector() {
     preview.href = item.href;
     preview.setAttribute('aria-label', `Open ${item.title}`);
     const media = preview.querySelector<HTMLElement>('.preview-media')!;
-    media.classList.toggle('is-diagram', item.isDiagram);
-    media.innerHTML = item.img ? `<img src="${esc(item.img)}" alt="">` : '';
+    // Only swap the image/clip when the demo changes (the preview also re-renders when just the
+    // overlap count changes, which shouldn't restart a playing clip).
+    if (media.dataset.item !== item.id) {
+      media.dataset.item = item.id;
+      media.classList.toggle('is-diagram', item.isDiagram);
+      if (item.video) {
+        media.innerHTML = `<video class="loop-video" src="${esc(item.video)}" poster="${esc(item.img ?? '')}" muted loop playsinline preload="none"></video>`;
+        setupLoopVideo(media.querySelector('video')!);
+      } else {
+        media.innerHTML = item.img ? `<img src="${esc(item.img)}" alt="">` : '';
+      }
+    }
     preview.querySelector('.preview-title')!.textContent = item.title;
     preview.querySelector('.preview-sub')!.textContent = item.subtitle;
     // On phones only the two plotted parameters are shown (.is-plotted); see global.css.

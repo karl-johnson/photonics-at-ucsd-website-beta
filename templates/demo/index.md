@@ -18,8 +18,9 @@ added: 2026-01-31 # YYYY-MM-DD, used for "most recent" sorting
 # diagramAlt: Describe the diagram for screen readers.
 # thumbnail: ./thumb.jpg        # front page image (defaults to the first photo, then the diagram)
 # photos:                       # up to two are shown beside the diagram
-#   - { src: ./photo-1.jpg, alt: What the photo shows }
-#   - { src: ./photo-2.jpg, alt: What the photo shows }
+#   - { src: ./photo-1.jpg, alt: "What the photo shows" }
+#   - { video: ./clip.mp4, alt: "What happens in the clip" }   # looping clip: save the original
+#                               # as clip.source.mp4 (or .mov/.gif) and run `npm run media`
 
 # One entry per parameter in src/data/rubric.yaml — see the Scoring rubric page for what each
 # number means. Each is one number (5) or a range ([7, 9]): 0–10, except budget, which is in dollars.

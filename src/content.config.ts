@@ -53,7 +53,19 @@ const demos = defineCollection({
       diagram: image().optional(),
       diagramAlt: z.string().optional(),
       thumbnail: image().optional(),
-      photos: z.array(z.object({ src: image(), alt: z.string() })).default([]),
+      // Each entry is a photo `{ src: ./photo.jpg, alt }` or a looping video clip
+      // `{ video: ./clip.mp4, alt }` (made by `npm run media`, which also makes its clip.poster.jpg).
+      photos: z
+        .array(
+          z.union([
+            z.strictObject({ src: image(), alt: z.string() }),
+            z.strictObject({
+              video: z.string().regex(/^\.\/[^/]+\.mp4$/, 'A video must be an .mp4 in the same folder, like ./clip.mp4'),
+              alt: z.string(),
+            }),
+          ]),
+        )
+        .default([]),
       scores,
       // The supplies table is built from this list by src/plugins/rehype-demo.mjs.
       supplies: z

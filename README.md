@@ -52,6 +52,35 @@ It only converts masters that changed (`npm run diagrams -- --force` converts al
 
 Each web version records a fingerprint of its master. If you forget to run the command, `npm run dev` and `npm run build` print a warning naming the master that changed, and the site uses the old web version until you run it. `npm run diagrams -- --check` lists out-of-date diagrams without converting anything.
 
+## Video clips
+
+Short looping clips (like GIFs, but much smaller and sharper) can be used anywhere a photo can, including as a demo's front page preview. Put the original clip in the demo's folder named `<name>.source.<ext>` (`.mp4`, `.mov`, `.m4v`, `.webm`, `.mkv`, `.avi` or `.gif`), then run:
+
+```bash
+npm run media
+```
+
+This makes, next to it:
+
+- `<name>.mp4`: silent, at most 960 px wide and 30 fps, compressed for the web (a few hundred KB for a 5 s clip)
+- `<name>.poster.jpg`: its first frame, shown until the clip plays
+
+Then list the clip in `photos:` like a photo, using `video` instead of `src`:
+
+```yaml
+photos:
+  - { video: ./clip.mp4, alt: "What happens in the clip" }
+  - { src: ./photo.jpg, alt: "A photo" }
+```
+
+If the first entry is a clip, the front page preview plays it too. Clips play silently on a loop while on screen, have a pause/play button, and show only the still frame to people who've turned on "reduce motion" on their device.
+
+The ffmpeg used for conversion comes with `npm install` (the `@ffmpeg-installer/ffmpeg` package), so nothing else needs installing. Like diagrams, each clip records a fingerprint of its source: if a source changes and `npm run media` isn't run, `npm run dev` and `npm run build` print a warning. `npm run media -- --check` lists out-of-date clips and `--force` reconverts all of them.
+
+Keep source clips short (under ~15 s) and reasonably small. They're committed to git, which keeps every version forever, and GitHub rejects files over 100 MB. Trim long recordings before adding them.
+
+**Quoting tip:** in `{ … }` entries like these, put text containing commas or colons in quotes. An unquoted comma ends the value early.
+
 ## Changing the scoring parameters
 
 The parameters, and the rubric text explaining them, live in one file: `src/data/rubric.yaml`. The [scoring rubric page](https://karl-johnson.github.io/photonics-at-ucsd-website-beta/resources/rubric/), the scores on every demo page, the front page plot, preview panel and list columns, and the checks on each demo's `scores:` are all built from it. Nothing else lists the parameters.
@@ -98,6 +127,7 @@ npm run dev       # http://localhost:4321/photonics-at-ucsd-website-beta/
 npm run build     # outputs to dist/
 npm run preview   # serve the built site
 npm run diagrams  # convert changed diagram masters (see "Diagrams" above)
+npm run media     # convert changed video clips (see "Video clips" above)
 ```
 
 If you change the Markdown plugins in `src/plugins/`, stop the dev server and delete `.astro/` and `node_modules/.astro/` first. Astro caches rendered Markdown, so without this you will keep seeing the old output.
@@ -112,7 +142,9 @@ If you change the Markdown plugins in `src/plugins/`, stop the dev server and de
 | `src/pages/resources/rubric.astro` | Scoring rubric page |
 | `src/plugins/remark-demo.mjs`, `rehype-demo.mjs` | Turn the Markdown conventions above into the page layout |
 | `scripts/diagrams.mjs`, `scripts/diagram-status.mjs` | `npm run diagrams`: converts diagram masters with Inkscape; fingerprint helpers |
-| `src/integrations/diagram-check.mjs` | Warns on dev/build when a diagram master changed since it was converted |
+| `scripts/media.mjs`, `scripts/media-status.mjs` | `npm run media`: converts source video clips with ffmpeg; fingerprint helpers |
+| `src/integrations/asset-check.mjs` | Warns on dev/build when a diagram master or source clip changed since it was converted |
+| `src/components/LoopVideo.astro`, `src/scripts/loop-video.ts`, `src/lib/media.ts` | Looping video clips: markup, play/pause behaviour, finding a clip and its poster |
 | `src/pages/index.astro`, `src/scripts/selector.ts` | Demo Selector (plot, preview, sortable list) |
 | `src/pages/demos/[slug].astro` | Demo page template |
 | `src/pages/resources/[slug].astro`, `src/pages/resources/index.astro` | Resource page template and the Resources page |

@@ -6,6 +6,7 @@ import Meter from '../components/Meter.astro';
 import { PARAMETERS, PARAMETER_INFO } from '../data/parameters';
 import { formatValue, type Range } from '../lib/scores';
 import { withBase } from '../lib/url';
+import { resolveClip } from '../lib/media';
 
 const demos = (await getCollection('demos', (d) => !d.data.draft)).sort(
   (a, b) => b.data.added.getTime() - a.data.added.getTime(),
@@ -15,7 +16,11 @@ const demos = (await getCollection('demos', (d) => !d.data.draft)).sort(
 const items = await Promise.all(
   demos.map(async (demo) => {
     const d = demo.data;
-    const photo = d.thumbnail ?? d.photos[0]?.src;
+    // The preview shows `thumbnail` if set, else the first photo (a clip plays, with its poster as
+    // the still), else the diagram.
+    const first = d.photos[0];
+    const clip = !d.thumbnail && first && 'video' in first ? resolveClip(demo.filePath!, first.video) : null;
+    const photo = d.thumbnail ?? (first ? ('video' in first ? clip!.poster : first.src) : undefined);
     const src = photo ?? d.diagram;
     return {
       id: demo.id,
@@ -26,6 +31,7 @@ const items = await Promise.all(
       // format: 'webp' also rasterizes SVG diagrams, which would otherwise be copied at full size.
       img: src ? (await getImage({ src, width: 952, format: 'webp' })).src : null,
       thumb: src ? (await getImage({ src, width: 216, format: 'webp' })).src : null,
+      video: clip?.src ?? null,
       isDiagram: !photo && !!d.diagram,
       ranges: d.scores as Record<string, Range>,
     };
@@ -106,7 +112,11 @@ const chevronUp = 'M2 8l4-4 4 4';
         featured && (
           <a class="preview lift" href={featured.href} aria-label={`Open ${featured.title}`}>
             <div class:list={['preview-media', { 'is-diagram': featured.isDiagram }]}>
-              {featured.img && <img src={featured.img} alt="" />}
+              {featured.video ? (
+                <video class="loop-video" src={featured.video} poster={featured.img} muted loop playsinline preload="none" />
+              ) : (
+                featured.img && <img src={featured.img} alt="" />
+              )}
             </div>
             <div class="preview-text">
               <h2 class="preview-title">{featured.title}</h2>

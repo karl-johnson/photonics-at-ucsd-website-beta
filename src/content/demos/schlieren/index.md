@@ -14,7 +14,8 @@ diagramAlt: >-
   #Samuel Kim
   
 photos:
-- { src: ./colorful-version.jpg, alt: A blast of air from an air duster, as seen by a modified version of the setup using two pieces of color film instead of the knife-edge filter.}
+- { video: ./video.mp4, alt: "The Schlieren image on the viewing screen, showing moving air around objects held in front of the mirror. TODO: describe what's happening in the clip." }
+- { src: ./colorful-version.jpg, alt: "A blast of air from an air duster, as seen by a modified version of the setup using two pieces of color film instead of the knife-edge filter." }
 
 # Scores: see /resources/rubric/ for what each number means.
 scores:

@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Meter from '../components/Meter.astro';
@@ -43,6 +43,10 @@ const cellValue = (item: Item, p: (typeof PARAMETERS)[number], compact = false) 
   formatValue(p.unit, item.ranges[p.key], compact);
 
 const featured = items[0];
+
+// Background section below the plot; its text is Markdown in src/content/pages/home.md.
+const homeIntro = await getEntry('pages', 'home');
+const HomeIntro = homeIntro ? (await render(homeIntro)).Content : null;
 // Default plot axes. If a key here is ever removed from rubric.yaml, fall back to the first parameters.
 const axisOrFallback = (key: string, i: number) => (PARAMETERS.some((p) => p.key === key) ? key : PARAMETERS[i].key);
 const defaultX = axisOrFallback('budget', 0);
@@ -138,6 +142,21 @@ const chevronUp = 'M2 8l4-4 4 4';
         )
       }
     </section>
+
+    {
+      homeIntro && (
+        <section class="home-intro" aria-labelledby="home-intro-title">
+          <div class="all-demos-head">
+            <div>
+              <h2 id="home-intro-title">{homeIntro.data.title}</h2>
+            </div>
+          </div>
+          <div class="doc home-intro-body">
+            <HomeIntro />
+          </div>
+        </section>
+      )
+    }
 
     <section class="all-demos" id="all" aria-labelledby="all-demos-title">
       <div class="all-demos-head">

@@ -119,6 +119,13 @@ Links to other pages on this site should start with `/` (e.g. `/resources/`). Th
 
 Resource pages (Light Sources, Optomechanics, …) live in `src/content/resources/<page-name>/index.md` and appear at `/resources/<page-name>/` and on the Resources page. The top of the file needs `title`, `subtitle` and `order` (position on the Resources page, lowest first). The rest uses exactly the same Markdown conventions as demo pages above. The scoring rubric is the exception: it's generated from `src/data/rubric.yaml`.
 
+## Other pages' text
+
+Some page text is Markdown in `src/content/pages/`, using the same conventions as demo pages:
+
+- `about.md`: the About page. `title` and `subtitle` (shown under the title) go at the top; the text before the first `##` is the intro, and each `##` starts a numbered section.
+- `home.md`: the "About these demos" section on the front page, between the plot and the list. Its `title` is the section heading.
+
 ## Development
 
 ```bash

@@ -5,11 +5,24 @@ interface Props {
   src: string;
   poster: string;
   alt: string;
+  /** Intrinsic size (e.g. the poster's), so the clip has the right shape before it loads */
+  width?: number;
+  height?: number;
 }
-const { src, poster, alt } = Astro.props;
+const { src, poster, alt, width, height } = Astro.props;
 ---
 
-<video class="loop-video" src={src} poster={poster} aria-label={alt} muted loop playsinline preload="none"></video>
+<video
+  class="loop-video"
+  src={src}
+  poster={poster}
+  width={width}
+  height={height}
+  aria-label={alt}
+  muted
+  loop
+  playsinline
+  preload="none"></video>
 <button type="button" class="video-toggle" aria-label="Play video" data-state="paused">
   <svg class="icon-pause" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1h3v10H2zM7 1h3v10H7z" fill="currentColor"></path></svg>
   <svg class="icon-play" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1l9 5-9 5z" fill="currentColor"></path></svg>

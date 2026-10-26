@@ -1,13 +1,22 @@
 ---
+// The About page. Its text is Markdown in src/content/pages/about.md.
+import { getEntry, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+
+const page = await getEntry('pages', 'about');
+if (!page) throw new Error('Missing src/content/pages/about.md');
+const { Content } = await render(page);
 ---
 
-<Base title="About" nav="about" footerLink={{ label: '← All demos', href: '/' }}>
-  <div class="container simple-page">
-    <h1>About</h1>
-    <p>
-      The Photonics Society at UC San Diego is a student organization. We build optical demos and experiments and
-      document them here so others can reproduce and present them.
-    </p>
+<Base title={page.data.title} nav="about" footerLink={{ label: '← All demos', href: '/' }}>
+  <section class="container page-hero">
+    <h1 class="demo-title">{page.data.title}</h1>
+    {page.data.subtitle && <p class="demo-subtitle">{page.data.subtitle}</p>}
+  </section>
+
+  <div class="container">
+    <article class="doc prose-page">
+      <Content />
+    </article>
   </div>
 </Base>

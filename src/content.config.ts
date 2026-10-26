@@ -99,4 +99,14 @@ const resources = defineCollection({
   }),
 });
 
-export const collections = { demos, resources };
+// One-off pages written in Markdown: src/content/pages/<name>.md
+//   about.md → the About page          home.md → the background section on the front page
+const pages = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/pages' }),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string().optional(),
+  }),
+});
+
+export const collections = { demos, resources, pages };

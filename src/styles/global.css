@@ -249,7 +249,7 @@ main.page {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 448px;
   gap: 56px;
-  align-items: stretch;
+  align-items: start; /* the columns don't have to end level: photos keep their own shape */
 }
 .demo-hero-main {
   display: flex;
@@ -381,21 +381,21 @@ main.page {
   text-align: right;
   white-space: nowrap;
 }
+/* Photos and clips below the scores, each at its own aspect ratio */
+.demo-photos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 .photo {
-  flex-grow: 1;
-  min-height: 220px;
-  position: relative;
-  overflow: hidden;
+  position: relative; /* for the clip's pause/play button */
   margin: 0;
 }
 .photo img,
 .photo video {
-  position: absolute;
-  inset: 0;
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
 }
 
 /* Pause/play button on looping video clips (src/components/LoopVideo.astro) */
@@ -422,19 +422,6 @@ main.page {
 .video-toggle[data-state='playing'] .icon-play,
 .video-toggle[data-state='paused'] .icon-pause {
   display: none;
-}
-.placeholder {
-  background: var(--placeholder);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--mono);
-  font-size: 14px;
-  color: var(--muted);
-}
-.placeholder--dark {
-  background: var(--ink);
-  color: #cfcbc2;
 }
 
 /* ───────── Demo page: body ───────── */
@@ -1046,6 +1033,17 @@ a.cite {
   white-space: nowrap;
 }
 
+/* Background section below the plot (text from src/content/pages/home.md) */
+.home-intro {
+  padding-top: 112px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.home-intro-body {
+  max-width: 780px;
+}
+
 /* All demos list */
 .all-demos {
   padding-top: 112px;
@@ -1493,6 +1491,13 @@ a[data-footnote-ref]::after {
   color: var(--accent);
 }
 
+/* Markdown page without a Contents sidebar (About: src/content/pages/about.md) */
+.prose-page {
+  max-width: 856px;
+  padding-top: 56px;
+  gap: 72px;
+}
+
 /* ───────── Simple pages (Resources, About) ───────── */
 
 .simple-page {
@@ -1662,20 +1667,18 @@ a[data-footnote-ref]::after {
     grid-template-columns: minmax(0, 1fr);
     gap: 32px;
   }
-  .demo-diagram {
+  /* Title, subtitle, blurb and diagram: one column, centred on the page */
+  .demo-hero-main {
+    width: 100%;
     max-width: 720px;
+    margin-inline: auto;
   }
+  /* Scores on the left, photos on the right (each at its own aspect ratio) */
   .demo-side {
     display: grid;
     grid-template-columns: minmax(0, 448px) minmax(0, 1fr);
-    grid-template-rows: 1fr 1fr;
     gap: 16px;
-  }
-  .demo-side .scores {
-    grid-row: span 2;
-  }
-  .photo {
-    min-height: 160px;
+    align-items: start;
   }
   .demo-body,
   .rubric-body {
@@ -2072,9 +2075,14 @@ a[data-footnote-ref]::after {
     font-size: 14px;
     color: var(--accent);
   }
-  .all-demos {
+  .all-demos,
+  .home-intro {
     padding-top: 56px;
     gap: 16px;
+  }
+  .prose-page {
+    padding-top: 32px;
+    gap: 48px;
   }
   .all-demos-head {
     padding-top: 16px;
@@ -2152,14 +2160,6 @@ a[data-footnote-ref]::after {
   .read-score .meter span {
     width: 8px;
     height: 10px;
-  }
-  .photo.placeholder {
-    display: none;
-  }
-  .photo {
-    flex-grow: 0;
-    min-height: 0;
-    aspect-ratio: 2 / 1;
   }
   .demo-body {
     padding-top: 40px;

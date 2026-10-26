@@ -24,16 +24,15 @@ const scoreRows = PARAMETERS.map((p) => {
   return { label: p.name, value: formatValue(p.unit, range), range: p.unit === 'usd' ? null : range };
 });
 
-// Two photo slots beside the diagram; empty slots show a placeholder until photos are added.
-// A slot holds a photo or a looping video clip (shown with its poster frame until it plays).
-const photoSlots = await Promise.all(
-  [0, 1].map(async (i) => {
-    const p = d.photos[i];
-    if (!p) return null;
+// Up to two photos below the scores, each shown at its own aspect ratio. An entry is a photo or a
+// looping video clip (shown with its poster frame until it plays).
+const photos = await Promise.all(
+  d.photos.slice(0, 2).map(async (p) => {
     if ('video' in p) {
       const clip = resolveClip(demo.filePath!, p.video);
       const poster = (await getImage({ src: clip.poster, width: 896, format: 'webp' })).src;
-      return { kind: 'video' as const, src: clip.src, poster, alt: p.alt };
+      // The poster's size gives the clip its shape before the video itself loads.
+      return { kind: 'video' as const, src: clip.src, poster, width: clip.poster.width, height: clip.poster.height, alt: p.alt };
     }
     return { kind: 'image' as const, src: p.src, alt: p.alt };
   }),
@@ -88,20 +87,23 @@ const photoSlots = await Promise.all(
         }
       </dl>
       {
-        photoSlots.map((p, i) =>
-          p ? (
-            <figure class="photo">
-              {p.kind === 'video' ? (
-                <LoopVideo src={p.src} poster={p.poster} alt={p.alt} />
-              ) : (
-                <Image src={p.src} alt={p.alt} widths={[448, 896, 1344]} sizes="(max-width: 719px) 100vw, 448px" />
-              )}
-            </figure>
-          ) : (
-            <div class:list={['photo', 'placeholder', { 'placeholder--dark': i === 1 }]} aria-hidden="true">
-              [PHOTO]
-            </div>
-          ),
+        photos.length > 0 && (
+          <div class="demo-photos">
+            {photos.map((p) => (
+              <figure class="photo">
+                {p.kind === 'video' ? (
+                  <LoopVideo src={p.src} poster={p.poster} width={p.width} height={p.height} alt={p.alt} />
+                ) : (
+                  <Image
+                    src={p.src}
+                    alt={p.alt}
+                    widths={[448, 896, 1344]}
+                    sizes="(max-width: 719px) 100vw, (max-width: 1199px) 50vw, 448px"
+                  />
+                )}
+              </figure>
+            ))}
+          </div>
         )
       }
     </div>

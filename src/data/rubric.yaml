@@ -120,6 +120,7 @@ parameters:
       1: Some assembly needed, but only takes a few seconds if you know what you’re doing
       2: 1 minute
       3: Under 5 minutes
+      4: About 10 minutes
       5: 15 minutes of dedicated setup
       8: >-
         1 hour: even if this were the only demo at an event, budget a full hour of setup time after

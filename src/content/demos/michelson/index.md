@@ -23,6 +23,8 @@ diagramAlt: >-
 
 # Photos go in this folder, then list them here (the first one is also the thumbnail):
 # photos:
+photos:
+  - { src: ./michelson-at-event.jpg, alt: Michelson interferometer being presented at an Optics Hour event.}
 #   - { src: ./photo-1.jpg, alt: The interferometer on a breadboard }
 
 # Scores: see /resources/rubric/ for what each number means.

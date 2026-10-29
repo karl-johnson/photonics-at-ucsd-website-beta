@@ -24,3 +24,4 @@ Demos we have physically built and presented in the past, but don't have a page 
 
 - Expanding the [Optomechanics](/resources/optomechanics/) resource page to include full descriptions and some CAD models
 - How to use these demos at various types of events, and how we structure events around these demos for different audiences
+- How to contribute to this website. Right now, there is a rambling README on [the Github](https://github.com/photonics-at-ucsd/photonics-at-ucsd-website-beta) but this should be turned into something more human-friendly.

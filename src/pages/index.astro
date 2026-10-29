@@ -53,7 +53,7 @@ const heroNouns = homeIntro?.data.nouns ?? [];
 // Default plot axes. If a key here is ever removed from rubric.yaml, fall back to the first parameters.
 const axisOrFallback = (key: string, i: number) => (PARAMETERS.some((p) => p.key === key) ? key : PARAMETERS[i].key);
 const defaultX = axisOrFallback('budget', 0);
-const defaultY = axisOrFallback('conceptComplexity', 1);
+const defaultY = axisOrFallback('wow', 1);
 const labelOf = (key: string) => PARAMETERS.find((p) => p.key === key)!.name;
 const chevronDown = 'M2 4l4 4 4-4';
 const chevronUp = 'M2 8l4-4 4 4';

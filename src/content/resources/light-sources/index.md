@@ -58,14 +58,16 @@ If you buy a laser that’s overpowered, the simplest solution is just to tape s
 
 Unlike laser diodes, red HeNe lasers have a spectral linewidth of 1.5 GHz at the very worst (as this is the Doppler-broadened gain bandwidth of the transition the laser operates on), and if you have a single mode HeNe, this linewidth is more like <1 MHz. This means their coherence length is much longer and interference can be observed even over great path length imbalances. Also, tube-based lasers are just really cool for demos, particularly if you have some without a cover. Everyone has seen a laser pointer, but gas lasers look like fancy lab lasers!
 
-Demos that require a HeNe:
+**A note on backreflections into HeNe lasers.** Sometimes in optical setups, light can reflect directly back into HeNe lasers. In general, this should be avoided as it can cause power instability and general misbehavior of the laser. We have even seen lasers shut off, or refuse to begin lasing when such external feedback is present. Fortunately, to our knowledge, there is no risk of permanent damage to the laser in such situations. Simply ensure that any optics external to the laser are tilted slightly to prevent direct backreflections, and these effects can be easily avoided.
+
+Demos that require a HeNe (some of these haven't been posted yet - now you have a sneak peak into what's coming in the future!):
 <!-- TODO: link these to their demo pages as they're added -->
 
-- *Strongly recommended* for interferometry demos
-- Absolute gravimeter (due to the large path length imbalance)
-- [Fabry–Perot demos](/demos/fabry-perot-mode-filter/)
-- Acousto-optic modulator (the frequency-shifting aspects, at least)
-- Zeeman splitting (requires a special laser tube/source)
+- *Strongly recommended* for any interferometry demos.
+- Absolute gravimeter (due to the large path length imbalance).
+- [Fabry–Perot demos](/demos/fabry-perot-mode-filter/).
+- Any demonstrations of frequency shifting using an Acousto-optic modulator (these are not part of [the existing documentation](/demos/acousto-optic/) but is a neat functionality we're interested in trying in the future).
+- [Zeeman splitting](/demos/zeeman-hene/) (requires a special laser tube/source).
 
 Brand new laboratory HeNe lasers are expensive — $1k–$5k! Fortunately, HeNes have had so many real-world uses (particularly before the commoditization of laser diodes) that many are available on the used market.
 
@@ -90,6 +92,8 @@ These lasers also have short tube lengths, yielding a mode spacing around 1 GHz.
 - Round enclosure, so you need a clamp to mount it
 
 [Manual (PDF)](https://vrguez.webs.ull.es/DOCENCIA/Laser%20He-Ne%20Melles%20Griot.pdf)
+
+
 
 ## White light
 

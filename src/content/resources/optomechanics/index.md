@@ -8,7 +8,7 @@ We have purposely included many demos on this site that don’t require traditio
 
 ## Summary
 
-| Item | Off-the-shelf cost (per optic) | DIY cost / required tools | Verdict |
+| Item | Off-the-shelf cost | DIY cost / required tools | Verdict |
 | --- | --- | --- | --- |
 | Optical breadboards | [$200–$1000](https://www.thorlabs.com/solid-aluminum-optical-breadboards) | $10–$200; quality improves with more tools, supplies and effort | Off-the-shelf options are so expensive that DIY is often worth it, but off-the-shelf is *super* nice |
 | Fixed lens holders | [$15–$30](https://www.thorlabs.com/fixed-lens-mounts) | <$1 with a 3D printer | DIY is a bit bulkier and must use a clamp instead of a retaining ring design, but is functionally almost identical |

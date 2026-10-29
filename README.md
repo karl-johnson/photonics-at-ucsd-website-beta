@@ -156,6 +156,7 @@ If you change the Markdown plugins in `src/plugins/`, stop the dev server and de
 | `src/components/LoopVideo.astro`, `src/scripts/loop-video.ts`, `src/lib/media.ts` | Looping video clips: markup, play/pause behaviour, finding a clip and its poster |
 | `src/pages/index.astro`, `src/scripts/selector.ts` | Demo Selector (plot, preview, sortable list) |
 | `src/pages/demos/[slug].astro` | Demo page template |
+| `src/pages/demos/michelson/interactive.astro`, `src/scripts/interferometer.js` | Michelson interferometer simulator (a one-off page). Link to a preset with `/demos/michelson/interactive/#…`, copying the hash from its "Get share link" button |
 | `src/pages/resources/[slug].astro`, `src/pages/resources/index.astro` | Resource page template and the Resources page |
 | `src/components/DocBody.astro` | Page body shared by demo and resource pages: Contents sidebar / sticky bar + the Markdown |
 | `src/styles/global.css` | Design tokens and all styles. The desktop design comes first; the "Responsive" section at the end adapts it for narrow windows (≤1199px), tablets (≤959px) and phones (≤719px) |

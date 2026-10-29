@@ -1,0 +1,333 @@
+---
+// The interactive Michelson interferometer simulator: a one-off page (the site's only web app).
+// The simulation itself is src/scripts/interferometer.js, which fills in the control tables below
+// and draws on the canvases, finding everything by id. State is kept in the URL hash, so links to
+// presets look like /demos/michelson/interactive/#L1=100&L2=100&...
+import Base from '../../../layouts/Base.astro';
+import { withBase } from '../../../lib/url';
+---
+
+<Base
+  title="Michelson Interferometer Simulator"
+  description="Interactive simulation of a Michelson interferometer with monochromatic or white light."
+  footerLink={{ label: '← Michelson interferometer demo', href: '/demos/michelson/' }}
+>
+  <section class="container sim-hero">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href={withBase('/')}>Demos</a>
+      <span aria-hidden="true">/</span>
+      <a href={withBase('/demos/michelson/')}>Michelson Interferometer</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">Simulator</span>
+    </nav>
+    <h1 class="sim-title">Michelson interferometer simulator</h1>
+    <p class="demo-subtitle">
+      Polychromatic fringes: see how arm lengths, mirror tilt, beam divergence and the light source shape the
+      interference pattern.
+    </p>
+  </section>
+
+  <section class="container sim">
+    <div class="sim-panel sim-panel--rgb">
+      <h2 class="sim-label">Interference pattern (RGB)</h2>
+      <div class="sim-canvas"><canvas id="rgbCanvas" width="520" height="515"></canvas></div>
+      <p id="info" class="sim-info">&nbsp;</p>
+      <p class="sim-hint">Click or drag on either image to select the point used for the spectrum plot.</p>
+    </div>
+
+    <div class="sim-panel">
+      <h2 class="sim-label" id="phaseTitle">Phase difference</h2>
+      <div class="sim-canvas"><canvas id="phaseCanvas" width="400" height="280"></canvas></div>
+      <table class="controls" id="phaseControls"></table>
+      <table class="controls">
+        <tr>
+          <td>Display</td>
+          <td>
+            <select id="phaseMode" class="select">
+              <option value="wrapped">Wrapped (-&pi; to &pi;)</option>
+              <option value="unwrapped">Unwrapped</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+
+      <h2 class="sim-label sim-label--spaced">Spectral intensity at selected point</h2>
+      <div class="sim-canvas"><canvas id="specCanvas" width="400" height="250"></canvas></div>
+      <table class="controls">
+        <tr>
+          <td>Source</td>
+          <td>
+            <select id="source" class="select">
+              <option value="gaussian">Gaussian (adjustable)</option>
+              <option value="laser">Monochromatic laser</option>
+              <option value="sun">Sunlight (5778 K blackbody)</option>
+              <option value="fluorescent">Fluorescent lamp (tri-phosphor)</option>
+              <option value="phosphor">Laser-excited phosphor flashlight</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+      <table class="controls" id="specControls"></table>
+      <label class="sim-check"><input type="checkbox" id="showCones" /> Show cone responsivities (L, M, S)</label>
+      <label class="sim-check"><input type="checkbox" id="logY" /> Log Y axis</label>
+    </div>
+
+    <div class="sim-panel sim-panel--geom">
+      <h2 class="sim-label">Interferometer</h2>
+      <table class="controls" id="geomControls"></table>
+      <div class="sim-buttons">
+        <button id="resetBtn" type="button" class="sim-button lift">Reset all to defaults</button>
+        <button id="shareBtn" type="button" class="sim-button lift">Get share link</button>
+      </div>
+      <input type="text" id="shareUrl" class="sim-share" readonly style="display: none" />
+      <small id="shareStatus" class="sim-hint"></small>
+    </div>
+  </section>
+
+  <section class="container sim-notes">
+    <div class="note">
+      <p class="note-title">How the model works</p>
+      <ul>
+        <li>
+          Purely geometric: the optical path of each arm is computed for an ideal spherical (or plane) wave; no
+          diffraction or extended-source effects.
+        </li>
+        <li>
+          The input beam is a collimated beam passed through a thin lens of the given power placed at the
+          beamsplitter, i.e. a point source (real or virtual) 1/D from the beamsplitter. D = 0 is a collimated beam.
+        </li>
+        <li>
+          Mirror 2 is tilted by &theta;<sub>x</sub>, &theta;<sub>y</sub> about its center, which deviates that arm's
+          beam by twice the tilt angle.
+        </li>
+        <li>Spectral intensity at each pixel is S(&lambda;)&middot;[1 + cos(2&pi;&middot;OPD/&lambda;)]/2.</li>
+        <li>
+          Color: the spectrum at each pixel is integrated against the CIE 1931 color matching functions, converted to
+          sRGB, and scaled so that a fully bright fringe just reaches full scale (so brightness is relative, not
+          absolute). Out-of-gamut colors are clipped.
+        </li>
+        <li>
+          The cone responsivity curves on the spectrum plot are the L, M and S cone fundamentals (a linear transform of
+          the same color matching functions), each normalized to a peak of 1.
+        </li>
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../../../scripts/interferometer.js';
+</script>
+
+<style is:global>
+  /* Global because interferometer.js builds the control rows itself. */
+  .sim-hero {
+    padding-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .sim-title {
+    margin: 0;
+    font-size: 48px;
+    line-height: 1.05;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  .sim {
+    padding-top: 40px;
+    display: grid;
+    grid-template-columns: minmax(0, 13fr) minmax(0, 10fr) 288px;
+    gap: 32px;
+    align-items: start;
+  }
+  .sim-panel {
+    min-width: 0;
+  }
+  .sim-label {
+    margin: 0 0 10px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .sim-label--spaced {
+    margin-top: 32px;
+  }
+  .sim-canvas {
+    border: 1px solid var(--ink);
+    background: var(--surface);
+    line-height: 0;
+  }
+  .sim-canvas canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #rgbCanvas,
+  #phaseCanvas {
+    cursor: crosshair;
+  }
+  .sim-info {
+    margin: 14px 0 0;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+  .sim-hint {
+    display: block;
+    margin: 8px 0 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* Controls: rows of [label] [slider] [number] [unit], or a label row above the slider row */
+  .sim table.controls {
+    width: 100%;
+    margin-top: 12px;
+    border-collapse: collapse;
+  }
+  .sim table.controls td {
+    padding: 3px 8px 3px 0;
+    vertical-align: middle;
+    white-space: nowrap;
+    font-size: 14px;
+  }
+  .sim table.controls td:last-child {
+    padding-right: 0;
+  }
+  .sim table.controls td:has(> input[type='range']),
+  .sim table.controls td:has(> select) {
+    width: 100%;
+  }
+  .sim table.controls td.stackedLabel {
+    padding-top: 12px;
+    white-space: normal;
+    color: var(--ink-2);
+  }
+  .sim table.controls td:nth-child(4),
+  .sim table.controls tr:has(> td.stackedLabel) + tr td:nth-child(3) {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .sim input[type='range'] {
+    width: 100%;
+    min-width: 80px;
+    margin: 0;
+    accent-color: var(--accent);
+  }
+  .sim input[type='number'] {
+    width: 76px;
+    padding: 4px 6px;
+    border: 1px solid var(--rule);
+    border-radius: 0;
+    background: var(--surface);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .sim input[type='number']:focus,
+  .sim-share:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+  }
+  .sim input:disabled {
+    opacity: 0.4;
+  }
+  .sim .select {
+    width: 100%;
+    padding: 7px 36px 7px 12px;
+    border: 1px solid var(--ink);
+    font-size: 14px;
+  }
+  .sim-check {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .sim-check input {
+    margin: 0;
+    accent-color: var(--accent);
+  }
+
+  .sim-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .sim-button {
+    padding: 10px 14px;
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    background: var(--surface);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .sim-share {
+    width: 100%;
+    margin-top: 16px;
+    padding: 6px 8px;
+    border: 1px solid var(--rule);
+    border-radius: 0;
+    background: var(--surface);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  .sim-notes {
+    padding-top: 56px;
+  }
+  .sim-notes .note {
+    max-width: 760px;
+  }
+
+  /* Narrow window / tablet: the two image columns side by side, the interferometer controls below */
+  @media (max-width: 1199px) {
+    .sim {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .sim-panel--geom {
+      grid-column: 1 / -1;
+      max-width: 560px;
+    }
+  }
+
+  /* Phone: one column */
+  @media (max-width: 719px) {
+    .sim-hero {
+      padding-top: 28px;
+      gap: 14px;
+    }
+    .sim-title {
+      font-size: 32px;
+    }
+    .sim {
+      grid-template-columns: minmax(0, 1fr);
+      padding-top: 28px;
+    }
+    .sim-panel--geom {
+      max-width: none;
+    }
+    .sim-notes {
+      padding-top: 40px;
+    }
+  }
+</style>

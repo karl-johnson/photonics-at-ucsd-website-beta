@@ -26,6 +26,8 @@ This is a simple concept but there are multiple important details to this formul
 ## This site
 The main focus of this website is to showcase many of the cool demos we've presented at our various events over the years. These could serve as the basis for other organizations to host events and outreach in their own communities as we do, or simply as projects to pursue for the fun of it. We think that we have come up with some unique demos, new twists on commonplace experiments, and discovered very useful tricks that all make for a memorable experience for the people viewing the demos. We hope you enjoy!
 
+Have any bug reports or other feedback? We'd love to hear it! You can leave an issue on the Github repo (see below) or simply email us at photonicsatucsd@gmail.com.
+
 ## Some links
 - [Discord channel](https://discord.gg/BAkKYwrYcK) where we organize and announce events. 
 - [Github repository for this website](https://github.com/photonics-at-ucsd/photonics-at-ucsd-website-beta)

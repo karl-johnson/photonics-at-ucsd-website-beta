@@ -14,7 +14,7 @@ diagramAlt: >-
   #Samuel Kim
   
 photos:
-- { video: ./video.mp4, alt: "The Schlieren image on the viewing screen, showing moving air around objects held in front of the mirror. TODO: describe what's happening in the clip." }
+- { video: ./video.mp4, alt: "Output of the Schlieren imaging system to a gentle blast of air from an air duster" }
 - { src: ./colorful-version.jpg, alt: "A blast of air from an air duster, as seen by a modified version of the setup using two pieces of color film instead of the knife-edge filter." }
 
 # Scores: see /resources/rubric/ for what each number means.

@@ -8,18 +8,18 @@ subtitle: Diffractive optics you can eat!
 # Optional: a short paragraph of context for readers new to the phenomenon, shown under the subtitle.
 # *italics*, **bold** and [links](…) work here.
 blurb: >-
-  Most objects in our daily lives look a particular color because of the material they're made of. However, in special situations, the colors we see can be purely due to the structure or geometry of an object, independent of what the object is actually made of. These chocolates provide the perfect (and edible!) example of this. The vibrant iridescent colors on the surface of the chocolate come entirely from light diffracting off of microscopic patterns in the surface of the chocolate. Due to the fragility of this pattern, the only real way to get these is by making them yourself using a special commercially-available mold. Doing this requires carefully tempering the chocolate, providing a secondary lesson about crystal phases!
+  Most objects in our daily lives look a particular color because of the material they're made of. However, in special situations, the colors we see can be purely due to the structure or geometry of an object, independent of what the object is actually made of. These chocolates provide the perfect (and edible!) example of this. The vibrant iridescent colors on the surface of the chocolate come entirely from light diffracting off of microscopic patterns in the surface of the chocolate. Due to the fragility of this pattern, these chocolates do not keep or ship well, and the only real way to get these is by making them yourself using a special (but inexpensive) mold. Doing this requires carefully tempering the chocolate, providing a secondary lesson about polymorphs/crystal phases!
 stub: true   # unfinished page: shows a red "this page is a stub" banner at the top
 added: 2026-10-29 # YYYY-MM-DD, used for "most recent" sorting
 
 # Images live in this same folder. All of these are optional.
-# diagram: ./diagram.svg        # shown full width at the top of the page. Save the Inkscape master
+diagram: ./diagram.svg        # shown full width at the top of the page. Save the Inkscape master
 #                               # here as diagram.source.svg and run `npm run diagrams` to make
 #                               # diagram.svg (see README "Diagrams"). PNG/JPG also work.
-# diagramAlt: Describe the diagram for screen readers.
+#diagramAlt: 
 # thumbnail: ./thumb.jpg        # front page image (defaults to the first photo, then the diagram)
 photos:                       # up to two are shown beside the diagram
-  - { video: ./video.mp4, alt: "Video of the colorful patterns diffracting off the chocolate." }
+  - { video: ./video.mp4, alt: "Video of colorful patterns changing colors as the position of a light source is changed above the chocolates." }
   - { src: ./close-up.jpg, alt: "Close-up photo of some holographic chocolates." }
 #   - { video: ./clip.mp4, alt: "What happens in the clip" }   # looping clip: save the original
 #                               # as clip.source.mp4 (or .mov/.gif) and run `npm run media`

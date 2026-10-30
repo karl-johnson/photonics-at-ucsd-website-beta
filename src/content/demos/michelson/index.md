@@ -12,7 +12,7 @@ blurb: >-
   Michelson interferometer](/demos/michelson/interactive/#L1=100&L2=100&L2fine=-0.4&thetaX=92&thetaY=50&D=0&Ld=100&fov=10&lambdaC=550&fwhm=100&lambdaP=550&source=sun&phaseMode=wrapped&showCones=0&logY=0&x=-3.433&y=-2.9719)!
   We think it helps a lot to better understand the interferometer, and have also included
   case-specific links throughout this page where we feel it is helpful for some of the explanations.
-added: 2026-10-28
+added: 2026-11-01
 
 diagram: ./diagram.svg
 diagramAlt: >-

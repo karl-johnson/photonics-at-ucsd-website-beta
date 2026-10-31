@@ -85,7 +85,7 @@ Keep source clips short (under ~15 s) and reasonably small. They're committed to
 
 ## Changing the scoring parameters
 
-The parameters, and the rubric text explaining them, live in one file: `src/data/rubric.yaml`. The [scoring rubric page](https://photonics-at-ucsd.github.io/photonics-at-ucsd-website-beta/resources/rubric/), the scores on every demo page, the front page plot, preview panel and list columns, and the checks on each demo's `scores:` are all built from it. Nothing else lists the parameters.
+The parameters, and the rubric text explaining them, live in one file: `src/data/rubric.yaml`. The [scoring rubric page](https://photonicsatucsd.com/resources/rubric/), the scores on every demo page, the front page plot, preview panel and list columns, and the checks on each demo's `scores:` are all built from it. Nothing else lists the parameters.
 
 - **Edit wording, descriptions or level text:** just edit the YAML.
 - **Reorder:** move the entries. Every page follows the new order.
@@ -132,7 +132,7 @@ Some page text is Markdown in `src/content/pages/`, using the same conventions a
 
 ```bash
 npm install
-npm run dev       # http://localhost:4321/photonics-at-ucsd-website-beta/
+npm run dev       # http://localhost:4321/
 npm run build     # outputs to dist/
 npm run preview   # serve the built site
 npm run diagrams  # convert changed diagram masters (see "Diagrams" above)
@@ -164,7 +164,7 @@ If you change the Markdown plugins in `src/plugins/`, stop the dev server and de
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to `main`. One-time setup: in the repository settings under **Pages**, set **Source** to **GitHub Actions**. If the repository name or domain changes, update `site` and `base` in `astro.config.mjs`.
+`.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to `main`. The site is served at https://photonicsatucsd.com. One-time setup: in the repository settings under **Pages**, set **Source** to **GitHub Actions** and **Custom domain** to `photonicsatucsd.com` (with **Enforce HTTPS** on). If the domain changes, update `site` in `astro.config.mjs`.
 
 ## License
 

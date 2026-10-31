@@ -5,10 +5,10 @@ import remarkDemo from './src/plugins/remark-demo.mjs';
 import rehypeDemo from './src/plugins/rehype-demo.mjs';
 import assetCheck from './src/integrations/asset-check.mjs';
 
-// GitHub Pages project site: https://<user>.github.io/<repo>/
-// If the site moves to a custom domain, set `site` to it and `base` to '/'.
-const site = 'https://photonics-at-ucsd.github.io';
-const base = '/photonics-at-ucsd-website-beta';
+// Served by GitHub Pages at the custom domain's root. (Without a custom domain it would be the
+// project site https://<user>.github.io/<repo>/, with `base` set to '/<repo>'.)
+const site = 'https://photonicsatucsd.com';
+const base = '/';
 
 export default defineConfig({
   site,

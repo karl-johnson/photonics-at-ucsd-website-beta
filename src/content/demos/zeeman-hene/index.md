@@ -18,7 +18,7 @@ photos:
 scores:
   budget: [300,1000]
   tools: [2,3]
-  manufacturingDifficulty: [4]
+  manufacturingDifficulty: [4,5]
   alignmentDifficulty: [1,3]
   portability: 3
   setupTime: [3,4]

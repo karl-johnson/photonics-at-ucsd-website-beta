@@ -20,7 +20,7 @@ photos:
 # Scores: see /resources/rubric/ for what each number means.
 scores:
   budget: [100,300]
-  tools: 2
+  tools: 3
   manufacturingDifficulty: [3,4]
   alignmentDifficulty: 4
   portability: [2,3]

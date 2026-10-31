@@ -24,12 +24,12 @@ parameters:
   - key: tools
     name: Required tools
     short: Tools
-    description: How fancy the tools are that you need to fabricate the required parts and assemble them together.
+    description: How fancy the tools are that you need to fabricate the required parts and/or assemble them together.
     levels:
-      0: No tools required
-      1: Scissors, tape
-      2: Hand screwdriver
-      3: FDM 3D printer, hand drill
+      0: No tools required.
+      1: Common everyday household or office items. Scissors, tape, microwave, etc.
+      2: Common garage tools. Hand screwdriver, pliers, allen wrenches, etc.
+      3: FDM 3D printer, hand drill, etc.
       4: Drill press, metal tapping, soldering iron
       5: Wood/acrylic laser cutter
       6: Manual machining
@@ -41,45 +41,40 @@ parameters:
     name: Manufacturing difficulty
     short: "Manu­facturing"
     description: >-
-      Assuming you have all the required tools, how hard it is to make and assemble the required
-      parts. Conveys the complexity of the parts and how many operations are required per part.
+      Assuming you have all the required tools, how hard it is to make and/or assemble the required
+      parts. Meant to convey the care or craftsmanship required, which is related to the complexity of the parts. Note that the difficulty of any optical alignment is excluded from this category. 
     levels:
       0: Purchased off-the-shelf in an already fully assembled state.
-      2: "Like a lego set: don't have to make anything but do have to put pieces together."
+      2: "Like a simple lego set, just put the pieces together."
       3: "Basic assembly of things on an optical breadboard (screwing stuff together). See also: assembling IKEA furniture."
-      4: First level where you have to make anything. 3D printed or laser cut parts where you can in principle just run the machine, and use as-is or assemble like legos.
-      5: 3D printed parts require post-processing, such as heat-set inserts, press-fit magnets, or gluing them together.
-      6: "Making parts requires some level of skill/adeptness, i.e. you can't just rely on an automated tool to do everything. Tapping holes or even having to carefully cut something with scissors could go here." 
-      8: Making parts requires multi-operation machining with cross-operation tolerances that matter
-      10: Literally LIGO
+      4: First level where your choices can impact the quality of the parts. E.g., 3D printing and laser cutting simple parts is mostly up to the machine, but it is up to you as the user to put the right settings into that machine.
+      5: Some skill is required to obtain a nice part. E.g, putting heat-set inserts or magnets into a 3D print.
+      6: A higher level of skill/knowledge is required to obtain a nice result. Tapping holes in metal, machining flat and square faces using a manual mill. 
+      8: There is some aspect of the manufacturing that you are unlikely to get right on your first try and should practice on one or multiple test pieces. E.g., tempering chocolate, manually routing out precise pockets in wood using a router.
+      10: Master artisan levels of hands-on skill. E.g., creating a mechanical wristwatch by hand.
 
   - key: alignmentDifficulty
     name: Alignment difficulty
     short: Alignment
     description: >-
-      How hard it is to align the optics in the setup. The “N DOF” examples here are coupled degrees
-      of freedom, as these increase difficulty exponentially (uncoupled DOFs only increase difficulty
-      linearly).
+      How hard it is to align the optics in the setup. This can range widely depending on available hardware available.
+      Difficulty of optical alignment is highly dependent on knowledge of alignment tricks and past experience, but we try not to factor those into this rating.
+      The rating is based off of the alignment procedure we recommend on that specific demo's page using the recommended optomechanical hardware.
+      Becuase there are many ways that an alignment can be hard, many of the points below are described solely with examples.
     levels:
-      0: No optical alignment required
-      1: "1 DOF alignment: focusing a lens"
-      2: "1 DOF alignment: center a laser beam on a target using a tip/tilt mirror (the X and Y axes are decoupled)"
-      4: "2 DOF alignment: center a laser on two pinholes in series using two tip/tilt mirrors"
-      5: "Michelson interferometer with a nice coherent source: just a fairly sensitive 2 DOF alignment"
+      0: No optical alignment required.
+      1: Focusing a camera lens (which has a nice focus ring).
+      2: Center a laser beam on a target using a tip/tilt mirror.
+      4: Center a laser on two pinholes in series using two tip/tilt mirrors. Super sensitive XY/focus alignments (Schlieren).
+      5: Align a Michelson interferometer with a good (long coherence length) laser source.
       6: >-
-        HeNe laser cavity: a super duper sensitive 2 coupled DOF alignment where you have no feedback
-        until it starts lasing. Another example: single mode collimator-to-collimator alignment, or
-        other mode matching alignments
+        Aligning a HeNe laser cavity where you have a second laser available to use to assist in alignment.
       7: >-
-        Michelson interferometer (white light): kinda like (2 coupled) + (2 coupled) + 1 super
-        sensitive (path length delay) alignment. If you don’t know the right tricks, you could spend
-        a day on this and not find the alignment
+        Aligning a white light Michelson interferometer that uses a cube beamsplitter, if you have a translation stage. Any alignment which requires mode matching to single mode beams to eachother (e.g. aligning two single mode fiber collimators to eachother with high efficiency).
       8: >-
-        White light Mach–Zehnder interferometer with wedge beamsplitters, free space ring resonators,
-        etc. More than 3 coupled DOFs on some elements
+        White light Mach–Zehnder interferometer with wedge beamsplitters + compensation plates. Free space ring resonators.
       9: >-
-        Mode locked laser free space alignment. When you own one of these systems, this is typically
-        only done by representatives of the laser company, whom you pay to come out and do it
+        Free space mode locked laser. Or, anything where multiple resonators must be simultaneously aligned to some common reference/each other.
       10: Literally LIGO
 
   - key: portability
@@ -87,22 +82,22 @@ parameters:
     short: "Porta­bility"
     description: >-
       How portable the setup is. Unlike the other scales, a higher number here usually goes with a
-      simpler setup, as the least portable things get a 0.
+      simpler setup, as the least portable things get a 0. The items here are just examples which mostly refer to optical setups.
+      Some demos get their portability scores bumped down for special transport considerations (can't be turned upside down, temperature sensitive, light sensitive, spill risk, etc.)
     levels:
       0: >-
         Permanent installation with substantial complications in relocating. Example: an optical
         setup with dozens of components built directly on a full-size optical table that requires
         water/air from the building
-      1: The demo can only barely be transported, likely requiring a special vehicle and causing lots of headache
+      1: The setup can only barely be transported, likely requiring a special vehicle and causing lots of headache.
       2: >-
-        Size of the demo is a factor when choosing a vehicle for transportation (examples: the old
-        laser puzzle on a 2×3 foot honeycomb breadboard, an absolute gravimeter)
-      3: "Example: Thorlabs Fourier optics demo"
-      6: >-
-        A bit chunky to put in a backpack, but not too fragile. May require slight disassembly for
-        travel and light padding of some components. Example: motorized polarization demo
-      7: "Could easily be carried in a backpack/bag without issue, with disassembly (example: [EXAMPLE])"
-      9: "Could be carried in a backpack/bag without issue, without disassembly (example: [EXAMPLE])"
+        Size of the demo is a factor when choosing a vehicle for transportation. For example, if the demo is built on a thick, heavy breadboard, or has fragile exposed optics that need large keep-out areas around them.
+      3: Built on a table/breadboard too large to be put inside a bag, with lots of exposed optics on the breadboard you don't want to move/pack for transport.
+      5: >-
+        A bit chunky to put in a backpack, but not too fragile. Demo is such that disassembly for
+        travel and light padding of some components is a possibility.
+      7: "If disassembled, could easily be carried in a backpack/bag without issue."
+      9: "Even without disassembly, could be carried in a backpack/bag without issue."
       10: "Could be carried around every day in your pocket (examples: hologram business card, pocket polarizers)"
 
   - key: setupTime
@@ -134,6 +129,7 @@ parameters:
     name: Presentation complexity
     short: "Presen­tation"
     description: >-
+      [TODO phrase more like: this is typical range of audiences most likely to resonate with the actual act of presenting your demo. Can span a wide range.]
       How complicated the actual process of presenting this demo is, in terms of the audience.
       Related to but distinct from concept complexity: a hologram is very easy to show to someone,
       and anyone used to normal photographs may find it interesting, while a complex optical setup
@@ -148,15 +144,14 @@ parameters:
       5: Late high school
       6: General undergraduate
       8: Physics or optics degree undergraduate
-      10: >-
-        Fully presenting the demonstration takes an hour or longer of uninterrupted activity, which
-        requires constant engagement by attendees with decent experience in order to follow. Likely
-        appropriate only for graduate level students and up
+      9: Physics or optics degree graduate student
+      10: Expert in this specific subfield/niche topic
 
   - key: conceptComplexity
     name: Concept complexity
     short: Concept complexity
     description: >-
+      [TODO phrase more like: this is when someone would normally learn this topic in school. But we can teach advanced concepts to anyone!] 
       A dangerous category to rigorously define: discussions of even seemingly mundane things can
       devolve into extreme complexity depending on the people involved, and a very good teacher can
       present extremely complicated things as very simple. Both have their limits, though, and it’s
@@ -171,8 +166,7 @@ parameters:
       8: Undergraduate optics
       9: Graduate optics
       10: >-
-        The concepts in question are phenomena at the frontiers of modern physics or the field, and
-        if anyone actually understands them, it is only experts in that thing
+        Cutting edge research project
 
   - key: wow
     name: WOW factor

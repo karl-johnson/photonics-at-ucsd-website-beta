@@ -35,7 +35,7 @@ scores:
   tools: 2
   manufacturingDifficulty: 3
   alignmentDifficulty: [5, 7]
-  portability: [3, 4]
+  portability: [2,3]
   setupTime: [3, 5]
   presentationComplexity: [4, 8]
   conceptComplexity: [4, 8]

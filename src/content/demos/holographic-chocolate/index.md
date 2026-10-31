@@ -29,9 +29,9 @@ photos:                       # up to two are shown beside the diagram
 scores:
   budget: [10,30]
   tools: 1                   # Required tools
-  manufacturingDifficulty: 6
+  manufacturingDifficulty: [7,8]
   alignmentDifficulty: 0
-  portability: 7
+  portability: 5
   setupTime: [0,1]
   presentationComplexity: 1
   conceptComplexity: [6,8]

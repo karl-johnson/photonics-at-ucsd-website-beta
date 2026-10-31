@@ -18,10 +18,10 @@ photos:
 # Scores: see /resources/rubric/ for what each number means.
 scores:
   budget: [50, 100]
-  tools: [1, 3]
+  tools: [1, 2]
   manufacturingDifficulty: [2,3]
   alignmentDifficulty: 0
-  portability: [6, 7]
+  portability: [5, 6]
   setupTime: [2, 3]
   presentationComplexity: [5,8]
   conceptComplexity: [6, 8]

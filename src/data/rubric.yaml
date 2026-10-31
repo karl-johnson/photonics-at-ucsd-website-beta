@@ -104,20 +104,23 @@ parameters:
     name: Setup time
     short: Setup time
     description: >-
-      Related to but distinct from portability (often correlated). A non-optics example: a fold-up
-      origami kayak is quite portable but takes a while to set up, while a rigid kayak isn’t very
-      portable but is pretty much ready to go once you’ve lugged it to your destination. Times are
-      conservative, counted once everything is already at the location.
+      Related to but distinct from portability (often correlated). Is somewhat specific to the use case of these
+      projects as something that you make in one place (e.g. your classroom, lab, or garage) then need to take somewhere
+      else to show some audience. This category's score is the amount of time after transporting a demo that it takes to bring 
+      it up to a functional state. A non-optics example: a fold-up origami kayak is quite portable but takes a while to set up, 
+      while a rigid kayak isn’t very portable but is pretty much ready to go once you’ve lugged it to your destination. Times are
+      conservative, counted once everything is already at the location. 
     levels:
       0: >-
         The objects making up the demo can only exist in one configuration, so they’re ready to go
-        merely by possessing them (examples: hologram business card, pocket polarizers)
+        merely by possessing them.
       1: Some assembly needed, but only takes a few seconds if you know what you’re doing
       2: 1 minute
-      3: Under 5 minutes
-      4: About 10 minutes
-      5: 15 minutes of dedicated setup
-      8: >-
+      4: 5 minutes
+      6: 10 minutes
+      7: 15 minutes
+      8: 30 minutes
+      9: >-
         1 hour: even if this were the only demo at an event, budget a full hour of setup time after
         the equipment is at the location
       10: >-
@@ -129,11 +132,7 @@ parameters:
     name: Presentation complexity
     short: "Presen­tation"
     description: >-
-      [TODO phrase more like: this is typical range of audiences most likely to resonate with the actual act of presenting your demo. Can span a wide range.]
-      How complicated the actual process of presenting this demo is, in terms of the audience.
-      Related to but distinct from concept complexity: a hologram is very easy to show to someone,
-      and anyone used to normal photographs may find it interesting, while a complex optical setup
-      needs a much more engaged and experienced audience to fully appreciate it.
+      No matter how good the presenter, some projects simply aren't a good fit for certain audiences. An extremely simple and straightforward demo may be boring to advanced audiences, just as a very complex optical setup might require too long and complex of explanation for younger audiences to follow. This category scores this, in terms of how complex the actual act of presenting a demo is and what audiences that is a best fit for. This score can span a wide range - in fact, spanning a very wide range here can be considered a positive, as putting effort into a single project can reach the widest range of audiences.
     levels:
       0: >-
         The logical progression of the demo can be followed by any human. Example: peek-a-boo
@@ -151,20 +150,18 @@ parameters:
     name: Concept complexity
     short: Concept complexity
     description: >-
-      [TODO phrase more like: this is when someone would normally learn this topic in school. But we can teach advanced concepts to anyone!] 
-      A dangerous category to rigorously define: discussions of even seemingly mundane things can
-      devolve into extreme complexity depending on the people involved, and a very good teacher can
-      present extremely complicated things as very simple. Both have their limits, though, and it’s
-      still meaningful to define a “typical” or “most fun” range for a given project.
+      This category scores the complexity of the underlying physical concepts that can be explained using this project,
+      by the level of education where that topic would typically be formally taught. Importantly, this does NOT mean that these concepts
+      cannot be explained or comprehended by audiences different than this score! A good presenter should be able to take concepts and make them interesting for anyone.
     levels:
       0: The underlying optical principles are obvious to every human
       1: Kindergarten
       3: Middle school
       5: Algebraic physics
-      6: AP physics (calculus)
-      7: Undergrad physics (lower division)
-      8: Undergraduate optics
-      9: Graduate optics
+      6: Calculus physics
+      7: Vector calculus physics
+      8: Upper division undergraduate physics/optics
+      9: Graduate physics/optics
       10: >-
         Cutting edge research project
 

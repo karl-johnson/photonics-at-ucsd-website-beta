@@ -33,7 +33,7 @@ scores:
   alignmentDifficulty: 0
   portability: 5
   setupTime: [0,1]
-  presentationComplexity: 1
+  presentationComplexity: [1,9]
   conceptComplexity: [6,8]
   wow: 8                     # WOW factor
 

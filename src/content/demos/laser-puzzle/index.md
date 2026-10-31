@@ -32,9 +32,9 @@ scores:
   manufacturingDifficulty: [5, 6]
   alignmentDifficulty: 2
   portability: 4
-  setupTime: 3
+  setupTime: [4,6]
   presentationComplexity: [1,8]
-  conceptComplexity: [1,5]
+  conceptComplexity: [3,5]
   wow: 8                     # WOW factor
 
 # Shown as a table under the "## Supplies" heading.

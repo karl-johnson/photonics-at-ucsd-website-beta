@@ -24,9 +24,9 @@ scores:
   manufacturingDifficulty: [3,4]
   alignmentDifficulty: 4
   portability: [2,3]
-  setupTime: [3,5]
+  setupTime: [5,7]
   presentationComplexity: [3,8]
-  conceptComplexity: [4,8]
+  conceptComplexity: [5,8]
   wow: [6,7]
 ---
 

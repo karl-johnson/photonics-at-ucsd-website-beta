@@ -19,8 +19,8 @@ scores:
   alignmentDifficulty: 0
   portability: 5
   setupTime: [0, 1]
-  presentationComplexity: [1, 6]
-  conceptComplexity: [5, 7]
+  presentationComplexity: [1, 7]
+  conceptComplexity: [5, 8]
   wow: [5, 7]
 
 supplies:
